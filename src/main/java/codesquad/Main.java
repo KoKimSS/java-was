@@ -13,12 +13,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static codesquad.http.response.HttpResponseSender.*;
-import static codesquad.http.urlMapper.ResourceGetter.*;
 
 
 public class Main {
@@ -32,11 +28,13 @@ public class Main {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
         Log.log("Server started on port " + PORT);
+
         while (true) {
             Socket clientSocket = serverSocket.accept();
             executorService.submit(() -> {
                 try {
                     servlet.handleClientRequest(clientSocket);
+                    clientSocket.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

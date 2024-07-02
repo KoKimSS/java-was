@@ -43,6 +43,8 @@ public class ResourceGetter {
             return "image/png";
         } else if (filePath.endsWith(".svg")) {
             return "image/svg+xml";
+        } else if (filePath.endsWith(".ico")) {
+            return "image/x-icon";
         } else {
             return "application/octet-stream"; // 기타 파일 형식의 기본 타입
         }
