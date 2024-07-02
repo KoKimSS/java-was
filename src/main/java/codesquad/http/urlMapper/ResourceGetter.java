@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 public class ResourceGetter {
     private static final String ROOT_DIRECTORY = "src/main/resources"; // 웹 리소스가 있는 디렉토리 경로
+    private static Path path;
 
 
     /**
@@ -53,12 +54,11 @@ public class ResourceGetter {
     /**
      * 파일의 바이트 배열을 읽어옵니다.
      *
-     * @param filePath 파일 경로
+     * @param filePath 파일 경로Ï
      * @return 파일의 바이트 배열
      */
     public static byte[] getResourceBytes(String filePath) throws IOException {
         String resourcePath = getResourcePath(filePath);
-        System.out.println(resourcePath);
         Path path = Paths.get(resourcePath);
         return Files.readAllBytes(path);
     }

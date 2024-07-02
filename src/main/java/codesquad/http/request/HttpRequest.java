@@ -17,7 +17,6 @@ public class HttpRequest {
     }
 
     // Getters and Setters
-
     public String getMethod() {
         return method;
     }
@@ -72,21 +71,19 @@ public class HttpRequest {
     }
 
     // Parse parameters from URL
-    private Map<String, String> parseParameters(String url) {
-        Map<String, String> params = new HashMap<>();
+    private void parseParameters(String url) {
         if (url.contains("?")) {
             String paramString = url.substring(url.indexOf("?") + 1);
             String[] paramPairs = paramString.split("&");
             for (String pair : paramPairs) {
                 String[] keyValue = pair.split("=");
                 if (keyValue.length > 1) {
-                    params.put(keyValue[0], keyValue[1]);
+                    parameters.put(keyValue[0], keyValue[1]);
                 } else {
-                    params.put(keyValue[0], "");
+                    parameters.put(keyValue[0], "");
                 }
             }
         }
-        return params;
     }
 
     @Override
@@ -96,6 +93,7 @@ public class HttpRequest {
                 ", url='" + url + '\'' +
                 ", version='" + version + '\'' +
                 ", headers=" + headers +
+                ", parameters=" + parameters +
                 ", body='" + body + '\'' +
                 '}';
     }
