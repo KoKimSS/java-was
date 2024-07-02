@@ -8,10 +8,12 @@ public class HttpRequest {
     private String url;
     private String version;
     private Map<String, String> headers;
+    private Map<String, String> parameters;
     private String body;
 
     public HttpRequest() {
         headers = new HashMap<>();
+        parameters = new HashMap<>();
     }
 
     // Getters and Setters
@@ -30,6 +32,7 @@ public class HttpRequest {
 
     public void setUrl(String url) {
         this.url = url;
+        parseParameters(url);
     }
 
     public String getVersion() {
@@ -58,6 +61,32 @@ public class HttpRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public String getParameter(String key) {
+        return parameters.get(key);
+    }
+
+    // Parse parameters from URL
+    private Map<String, String> parseParameters(String url) {
+        Map<String, String> params = new HashMap<>();
+        if (url.contains("?")) {
+            String paramString = url.substring(url.indexOf("?") + 1);
+            String[] paramPairs = paramString.split("&");
+            for (String pair : paramPairs) {
+                String[] keyValue = pair.split("=");
+                if (keyValue.length > 1) {
+                    params.put(keyValue[0], keyValue[1]);
+                } else {
+                    params.put(keyValue[0], "");
+                }
+            }
+        }
+        return params;
     }
 
     @Override

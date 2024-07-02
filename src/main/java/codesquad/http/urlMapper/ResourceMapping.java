@@ -19,6 +19,7 @@ public class ResourceMapping {
         resourceMap.put("/contact", "contact.html");
         resourceMap.put("/css/styles.css", "styles.css");
         resourceMap.put("/js/main.js", "main.js");
+        resourceMap.put("/registration", "/static/registration/index.html");
     }
 
     /**
