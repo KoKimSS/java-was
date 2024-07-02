@@ -6,6 +6,7 @@ import java.util.Map;
 public class HttpRequest {
     private String method;
     private String url;
+    private String uri;
     private String version;
     private Map<String, String> headers;
     private Map<String, String> parameters;
@@ -31,6 +32,7 @@ public class HttpRequest {
 
     public void setUrl(String url) {
         this.url = url;
+        this.uri = url.split("\\?")[0];
         parseParameters(url);
     }
 
@@ -68,6 +70,10 @@ public class HttpRequest {
 
     public String getParameter(String key) {
         return parameters.get(key);
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     // Parse parameters from URL

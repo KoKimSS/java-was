@@ -1,6 +1,9 @@
 package codesquad.http.Servlet;
 
 import codesquad.Main;
+import codesquad.http.User.UserRepository;
+import codesquad.http.handler.Handler;
+import codesquad.http.handler.UserHandler;
 import codesquad.http.log.Log;
 import codesquad.http.request.HttpRequest;
 import codesquad.http.request.HttpRequestParser;
@@ -22,9 +25,13 @@ import static codesquad.http.urlMapper.ResourceGetter.getResourceBytes;
 
 public class Servlet {
     private final ResourceMapping resourceMapping;
+    private final Handler handler;
 
     public Servlet(ResourceMapping resourceMapping) {
         this.resourceMapping = resourceMapping;
+        UserRepository userRepository = new UserRepository();
+        UserHandler userHandler = new UserHandler(userRepository);
+        this.handler = new Handler(userHandler);
     }
 
     public void handleClientRequest(Socket clientSocket) throws IOException {
@@ -32,6 +39,8 @@ public class Servlet {
 
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
         log(request.toString());
+
+        handler.handlerMapping(request);
 
         // HTTP 응답을 생성합니다.
         OutputStream clientOutput = clientSocket.getOutputStream();
