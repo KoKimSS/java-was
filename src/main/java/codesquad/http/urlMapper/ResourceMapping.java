@@ -14,6 +14,7 @@ public class ResourceMapping {
     private void initializeMappings() {
         // 간단한 예제 URL 패턴과 리소스 매핑 설정
         resourceMap.put("/", "/static/index.html");
+        resourceMap.put("/index.html", "/static/index.html");
         resourceMap.put("/about", "about.html");
         resourceMap.put("/contact", "contact.html");
         resourceMap.put("/css/styles.css", "styles.css");
@@ -27,8 +28,27 @@ public class ResourceMapping {
      * @return URL에 해당하는 리소스 경로
      */
     public String getResourcePath(String url) {
+        if (url.startsWith("/img")) {
+            return "/static" + url;
+        }
+
+        if (url.endsWith(".svg")) {
+            return "/static" + url;
+        } else if (url.endsWith(".png")) {
+            return "/static" + url;
+        } else if (url.endsWith(".jpg") || url.endsWith(".jpeg")) {
+            return "/static" + url;
+        } else if (url.endsWith(".css")) {
+            return "/static" + url;
+        } else if (url.endsWith(".js")) {
+            return "/static" + url;
+        } else if (url.endsWith(".ico")) {
+            return "/static" + url;
+        }
+
         return resourceMap.get(url);
     }
+
 
     /**
      * 리소스 매핑을 업데이트하거나 새로운 매핑을 추가합니다.

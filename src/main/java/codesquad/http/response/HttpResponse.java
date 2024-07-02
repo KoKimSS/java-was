@@ -7,7 +7,7 @@ public class HttpResponse {
     private int statusCode;
     private String statusMessage;
     private Map<String, String> headers;
-    private String body;
+    private byte[] body;
 
     public HttpResponse() {
         headers = new HashMap<>();
@@ -41,11 +41,11 @@ public class HttpResponse {
         this.headers.put(key, value);
     }
 
-    public String getBody() {
+    public byte[] getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(byte[] body) {
         this.body = body;
     }
 
