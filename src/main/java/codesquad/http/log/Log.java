@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class Log {
     private static final Logger logger = LoggerFactory.getLogger(Log.class);
 
-    public void log(String message) {
+    public static void log(String message) {
         logger.debug(message);
     }
 }
