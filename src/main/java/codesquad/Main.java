@@ -1,16 +1,9 @@
 package codesquad;
 
-import codesquad.http.Servlet.Servlet;
+import codesquad.http.webServer.WebServer;
 import codesquad.http.log.Log;
-import codesquad.http.request.HttpRequest;
-import codesquad.http.request.HttpRequestParser;
-import codesquad.http.urlMapper.ResourceMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -20,8 +13,7 @@ import java.util.concurrent.Executors;
 public class Main {
     private static final int THREAD_POOL_SIZE = 10;
     private static final int PORT = 8080;
-    private static final ResourceMapping resourceMapping = new ResourceMapping();
-    private static final Servlet servlet = new Servlet(resourceMapping);
+    private static final WebServer WEB_SERVER = new WebServer();
 
     public static void main(String[] args) throws IOException {
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -33,7 +25,7 @@ public class Main {
             Socket clientSocket = serverSocket.accept();
             executorService.submit(() -> {
                 try {
-                    servlet.handleClientRequest(clientSocket);
+                    WEB_SERVER.handleClientRequest(clientSocket);
                     clientSocket.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);

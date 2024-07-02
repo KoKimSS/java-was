@@ -6,6 +6,7 @@ import java.util.Map;
 public class HttpResponse {
     private int statusCode;
     private String statusMessage;
+    private String contentType;
     private Map<String, String> headers;
     private byte[] body;
 
@@ -47,6 +48,14 @@ public class HttpResponse {
 
     public void setBody(byte[] body) {
         this.body = body;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     @Override

@@ -17,6 +17,7 @@ public class ResourceGetter {
      * @return 리소스 파일 경로
      */
     private static String getResourcePath(String url) {
+
         String filePath = ROOT_DIRECTORY + url;
         Path path = Paths.get(filePath);
         if (Files.exists(path) && !Files.isDirectory(path)) {
@@ -31,7 +32,7 @@ public class ResourceGetter {
      * @param filePath 파일 경로
      * @return MIME 타입 문자열
      */
-    public static String getContentType(String filePath) {
+    public static String getContentTypeByPath(String filePath) {
         if (filePath.endsWith(".html")) {
             return "text/html";
         } else if (filePath.endsWith(".css")) {
