@@ -1,5 +1,6 @@
 package codesquad.http.server;
 
+import codesquad.http.exception.InternalServerException;
 import codesquad.http.log.Log;
 import codesquad.http.webServer.WebServer;
 
@@ -28,11 +29,13 @@ public class Server {
 
         while (true) {
             // Queue 연결 하기 전 (   Queue 50
-            
+
             executorService.submit(() -> {
                 try (Socket clientSocket = serverSocket.accept()) {
                     webServer.handleClientRequest(clientSocket);
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InternalServerException e) {
                     throw new RuntimeException(e);
                 }
             });

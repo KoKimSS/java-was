@@ -1,5 +1,6 @@
 package codesquad.http.webServer;
 
+import codesquad.http.exception.InternalServerException;
 import codesquad.http.user.UserRepository;
 import codesquad.http.handler.Handler;
 import codesquad.http.handler.UserHandler;
@@ -28,16 +29,16 @@ public class WebServer {
         this.handler = new Handler(userHandler);
     }
 
-    public void handleClientRequest(Socket clientSocket) throws IOException {
+    public void handleClientRequest(Socket clientSocket) throws IOException, InternalServerException {
         InputStream inputStream = clientSocket.getInputStream();
 
         // HttpRequest 생성
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
-//        log(request.toString());
+        log(request.toString());
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
         HttpResponse response = handler.handlerMapping(request);
-//        log(response.toString());
+        log(response.toString());
         OutputStream clientOutput = clientSocket.getOutputStream();
 
         // 요청된 URL과 매핑된 리소스 파일 경로 가져오기

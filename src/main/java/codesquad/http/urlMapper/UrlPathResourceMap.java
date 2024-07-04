@@ -3,7 +3,7 @@ package codesquad.http.urlMapper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UrlResourceMap {
+public class UrlPathResourceMap {
     private static final Map<String, String> resourcePathMap = new HashMap<String, String>() {{
         // 간단한 예제 URL 패턴과 리소스 매핑 설정
         put("/", "/static/index.html");
@@ -15,7 +15,7 @@ public class UrlResourceMap {
         put("/registration", "/static/registration/index.html");
     }};
 
-    private UrlResourceMap() {
+    private UrlPathResourceMap() {
     }
 
     /**
@@ -24,7 +24,7 @@ public class UrlResourceMap {
      * @param uri 요청된 URL
      * @return URL에 해당하는 리소스 경로
      */
-    public static String getResourcePathByUri(String uri) {
+    public static String getResourcePathByUrlPath(String uri) {
 
         // 자료를 요청하는 경우 자료 경로를 그대로 반환
         if (uri.endsWith(".svg")) {

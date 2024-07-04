@@ -19,17 +19,23 @@ public class HttpRequestParser {
             throw new IOException("Invalid request line: " + requestLine);
         }
         request.setMethod(requestLineParts[0]);
-        request.setUrl(new URL(requestLineParts[1]));
+        String path = requestLineParts[1];
         request.setVersion(requestLineParts[2]);
 
         // Parse headers
         String headerLine;
+
         while (!(headerLine = reader.readLine()).isEmpty()) {
             String[] headerParts = headerLine.split(": ", 2);
             if (headerParts.length == 2) {
                 request.addHeader(headerParts[0], headerParts[1]);
             }
         }
+
+        String host = request.getHeaders().get("Host");
+        String protocol = "http";
+        URL url = new URL(protocol, host, path);
+        request.setUrl(url);
 
         // Parse body (if any)
         StringBuilder body = new StringBuilder();

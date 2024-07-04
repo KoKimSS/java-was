@@ -11,6 +11,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Server server = new Server(THREAD_POOL_SIZE,PORT, BACKLOG);
-        server.run();
+        try {
+            server.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
