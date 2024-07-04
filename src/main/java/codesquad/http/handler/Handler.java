@@ -6,11 +6,10 @@ import codesquad.http.urlMapper.ResourceGetter;
 
 import java.io.IOException;
 
-import static codesquad.http.urlMapper.ResourceGetter.getResourceBytes;
-import static codesquad.http.urlMapper.UrlResourceMap.getResourcePathByUrl;
+import static codesquad.http.urlMapper.ResourceGetter.getResourceBytesByPath;
+import static codesquad.http.urlMapper.UrlResourceMap.getResourcePathByUri;
 
 public class Handler {
-
     private final UserHandler userHandler;
 
     public Handler(UserHandler userHandler) {
@@ -19,20 +18,24 @@ public class Handler {
 
     public HttpResponse handlerMapping(HttpRequest request) throws IOException {
         HttpResponse response = new HttpResponse();
-        System.out.println(request.getUri()+" "+request.getMethod());
 
         // URL 매핑이 되면 비즈니스 로직 수행
         if(request.getMethod().equals("GET") && request.getUri().equals("/registration")) {
-            userHandler.saveUser(request,response);
+            userHandler.registration(request,response);
             return response;
         }
 
+        staticResponse(request, response);
+        return response;
+    }
+
+    private static void staticResponse(HttpRequest request, HttpResponse response) throws IOException {
         // URL 매핑이 되지 않으면 정적인 파일만 보냄
-        String resourcePath = getResourcePathByUrl(request.getUrl());
-        byte[] body = getResourceBytes(resourcePath);
+        String resourcePath = getResourcePathByUri(request.getUrl());
+        byte[] body = getResourceBytesByPath(resourcePath);
+
         response.setBody(body);
         response.setStatusCode(200);
         response.setContentType(ResourceGetter.getContentTypeByPath(resourcePath));
-        return response;
     }
 }

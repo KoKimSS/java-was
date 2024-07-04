@@ -7,11 +7,10 @@ public class HttpResponse {
     private int statusCode;
     private String statusMessage;
     private String contentType;
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
     private byte[] body;
 
     public HttpResponse() {
-        headers = new HashMap<>();
     }
 
     public int getStatusCode() {
@@ -36,6 +35,10 @@ public class HttpResponse {
 
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    public void setHeader(String key, String value) {
+        headers.put(key, value);
     }
 
     public void addHeader(String key, String value) {

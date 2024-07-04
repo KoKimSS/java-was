@@ -20,4 +20,8 @@ public class MemoryRepository {
     public static boolean containsKey(String key) {
         return map.containsKey(key);
     }
+
+    public static void printMap() {
+        map.forEach((k, v) -> Log.log("key: " + k + " value: " + v));
+    }
 }

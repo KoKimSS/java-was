@@ -17,7 +17,6 @@ public class ResourceGetter {
      * @return 리소스 파일 경로
      */
     private static String getResourcePath(String url) {
-
         String filePath = ROOT_DIRECTORY + url;
         Path path = Paths.get(filePath);
         if (Files.exists(path) && !Files.isDirectory(path)) {
@@ -58,7 +57,7 @@ public class ResourceGetter {
      * @param filePath 파일 경로Ï
      * @return 파일의 바이트 배열
      */
-    public static byte[] getResourceBytes(String filePath) throws IOException {
+    public static byte[] getResourceBytesByPath(String filePath) throws IOException {
         String resourcePath = getResourcePath(filePath);
         Path path = Paths.get(resourcePath);
         return Files.readAllBytes(path);

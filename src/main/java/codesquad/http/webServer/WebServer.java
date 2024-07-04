@@ -1,6 +1,6 @@
 package codesquad.http.webServer;
 
-import codesquad.http.User.UserRepository;
+import codesquad.http.user.UserRepository;
 import codesquad.http.handler.Handler;
 import codesquad.http.handler.UserHandler;
 import codesquad.http.request.HttpRequest;
@@ -33,16 +33,17 @@ public class WebServer {
 
         // HttpRequest 생성
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
-        log(request.toString());
+//        log(request.toString());
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
         HttpResponse response = handler.handlerMapping(request);
-        log(response.toString());
+//        log(response.toString());
         OutputStream clientOutput = clientSocket.getOutputStream();
 
         // 요청된 URL과 매핑된 리소스 파일 경로 가져오기
         sendHttpResponse(clientOutput, response);
         clientOutput.flush();
+        clientOutput.close();
     }
 
 }

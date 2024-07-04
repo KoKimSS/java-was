@@ -1,4 +1,4 @@
-package codesquad.http.User;
+package codesquad.http.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,4 +19,6 @@ class UserTest {
         assertEquals(username, user.getUsername());
         assertEquals(password, user.getPassword());
     }
+
+
 }

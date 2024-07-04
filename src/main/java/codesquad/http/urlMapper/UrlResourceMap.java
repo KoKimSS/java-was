@@ -21,27 +21,27 @@ public class UrlResourceMap {
     /**
      * 주어진 URL에 해당하는 리소스 경로를 반환합니다.
      *
-     * @param url 요청된 URL
+     * @param uri 요청된 URL
      * @return URL에 해당하는 리소스 경로
      */
-    public static String getResourcePathByUrl(String url) {
+    public static String getResourcePathByUri(String uri) {
 
         // 자료를 요청하는 경우 자료 경로를 그대로 반환
-        if (url.endsWith(".svg")) {
-            return "/static" + url;
-        } else if (url.endsWith(".png")) {
-            return "/static" + url;
-        } else if (url.endsWith(".jpg") || url.endsWith(".jpeg")) {
-            return "/static" + url;
-        } else if (url.endsWith(".css")) {
-            return "/static" + url;
-        } else if (url.endsWith(".js")) {
-            return "/static" + url;
-        } else if (url.endsWith(".ico")) {
-            return "/static" + url;
+        if (uri.endsWith(".svg")) {
+            return "/static" + uri;
+        } else if (uri.endsWith(".png")) {
+            return "/static" + uri;
+        } else if (uri.endsWith(".jpg") || uri.endsWith(".jpeg")) {
+            return "/static" + uri;
+        } else if (uri.endsWith(".css")) {
+            return "/static" + uri;
+        } else if (uri.endsWith(".js")) {
+            return "/static" + uri;
+        } else if (uri.endsWith(".ico")) {
+            return "/static" + uri;
         }
 
         // URL 을 통한 자료요청은 매핑을 시켜 자료 반환
-        return resourcePathMap.get(url);
+        return resourcePathMap.get(uri);
     }
 }

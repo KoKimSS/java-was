@@ -1,4 +1,4 @@
-package codesquad.http.User;
+package codesquad.http.user;
 
 import codesquad.http.log.Log;
 import codesquad.http.repository.MemoryRepository;
@@ -8,12 +8,17 @@ import static codesquad.http.repository.MemoryRepository.*;
 public class UserRepository {
 
     public void save(User user) {
-        if(isExistUser(user.getUserId())){
-            //todo : 예외처리로 변경
-            Log.log("이미 저장 된 유저입니다");
+        if(user.getUserId().isBlank()){
+            Log.log("유저아이디는 필수 값 입니다.");
             return;
         }
-        put("User"+user.getUserId(),user);
+        if(!isExistUser(user.getUserId())){
+            //todo : 예외처리로 변경
+            put("User"+user.getUserId(),user);
+            printMap();
+            return;
+        }
+        Log.log("이미 저장 된 유저입니다");
     }
 
     private static boolean isExistUser(String userId) {
@@ -23,4 +28,6 @@ public class UserRepository {
     public User get(String userId) {
         return (User) MemoryRepository.get("User"+userId).orElseThrow(IllegalArgumentException::new);
     }
+
+
 }

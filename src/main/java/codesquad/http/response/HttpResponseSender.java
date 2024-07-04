@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpResponseSender {
 
+    private HttpResponseSender() {
+    }
 
     /**
      * HTTP 응답을 생성하고 클라이언트에게 보냅니다.
