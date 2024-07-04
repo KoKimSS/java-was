@@ -1,4 +1,4 @@
-package codesquad.http.user;
+package codesquad.was.user;
 
 import java.util.Objects;
 

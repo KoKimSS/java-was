@@ -1,8 +1,8 @@
-package codesquad.http.server;
+package codesquad.was.server;
 
-import codesquad.http.exception.InternalServerException;
-import codesquad.http.log.Log;
-import codesquad.http.webServer.WebServer;
+import codesquad.was.exception.InternalServerException;
+import codesquad.was.log.Log;
+import codesquad.was.webServer.WebServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;

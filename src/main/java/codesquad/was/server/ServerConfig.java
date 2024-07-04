@@ -1,4 +1,4 @@
-package codesquad.http.server;
+package codesquad.was.server;
 
 public abstract class ServerConfig {
     public static final int PORT = 8080;

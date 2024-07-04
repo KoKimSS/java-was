@@ -1,20 +1,19 @@
-package codesquad.http.webServer;
+package codesquad.was.webServer;
 
-import codesquad.http.exception.InternalServerException;
-import codesquad.http.user.UserRepository;
-import codesquad.http.handler.Handler;
-import codesquad.http.handler.UserHandler;
-import codesquad.http.request.HttpRequest;
-import codesquad.http.request.HttpRequestParser;
-import codesquad.http.response.HttpResponse;
+import codesquad.was.handler.Handler;
+import codesquad.was.handler.UserHandler;
+import codesquad.was.log.Log;
+import codesquad.was.request.HttpRequest;
+import codesquad.was.request.HttpRequestParser;
+import codesquad.was.response.HttpResponse;
+import codesquad.was.response.HttpResponseSender;
+import codesquad.was.user.UserRepository;
+import codesquad.was.exception.InternalServerException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-
-import static codesquad.http.log.Log.*;
-import static codesquad.http.response.HttpResponseSender.sendHttpResponse;
 
 /**
  * Socket 통신을 Http 로 변환하여 통신하게 해준다
@@ -34,15 +33,15 @@ public class WebServer {
 
         // HttpRequest 생성
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
-        log(request.toString());
+        Log.log(request.toString());
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
         HttpResponse response = handler.handlerMapping(request);
-        log(response.toString());
+        Log.log(response.toString());
         OutputStream clientOutput = clientSocket.getOutputStream();
 
         // 요청된 URL과 매핑된 리소스 파일 경로 가져오기
-        sendHttpResponse(clientOutput, response);
+        HttpResponseSender.sendHttpResponse(clientOutput, response);
         clientOutput.flush();
         clientOutput.close();
     }

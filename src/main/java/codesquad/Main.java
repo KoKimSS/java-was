@@ -1,10 +1,10 @@
 package codesquad;
 
-import codesquad.http.server.Server;
+import codesquad.was.server.Server;
 import java.io.IOException;
 
-import static codesquad.http.server.ServerConfig.*;
-import static codesquad.http.server.ServerConfig.THREAD_POOL_SIZE;
+import static codesquad.was.server.ServerConfig.*;
+import static codesquad.was.server.ServerConfig.THREAD_POOL_SIZE;
 
 
 public class Main {

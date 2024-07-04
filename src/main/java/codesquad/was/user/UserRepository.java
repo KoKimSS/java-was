@@ -1,9 +1,9 @@
-package codesquad.http.user;
+package codesquad.was.user;
 
-import codesquad.http.log.Log;
-import codesquad.http.repository.MemoryRepository;
+import codesquad.was.log.Log;
+import codesquad.was.repository.MemoryRepository;
 
-import static codesquad.http.repository.MemoryRepository.*;
+import static codesquad.was.repository.MemoryRepository.*;
 
 public class UserRepository {
 

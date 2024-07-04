@@ -1,4 +1,4 @@
-package codesquad.http.mime;
+package codesquad.was.mime;
 
 import java.util.Arrays;
 

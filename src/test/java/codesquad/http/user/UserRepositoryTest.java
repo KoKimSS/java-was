@@ -1,6 +1,8 @@
 package codesquad.http.user;
 
-import codesquad.http.repository.MemoryRepository;
+import codesquad.was.repository.MemoryRepository;
+import codesquad.was.user.User;
+import codesquad.was.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

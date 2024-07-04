@@ -1,5 +1,7 @@
-package codesquad.http.urlMapper;
+package codesquad.was.urlMapper;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,9 +59,39 @@ public class ResourceGetter {
      * @param filePath 파일 경로Ï
      * @return 파일의 바이트 배열
      */
+//    public static byte[] getResourceBytesByPath(String filePath) throws IOException {
+//        String resourcePath = getStaticResourceByPath(filePath);
+//        File file = new File(resourcePath);
+//        return readBytesFromFile(file);
+//        Path path = Paths.get(resourcePath);
+//        return Files.readAllBytes(path);
+//    }
+    /**
+     * 파일의 바이트 배열을 읽어옵니다.
+     *
+     * @param filePath 파일 경로Ï
+     * @return 파일의 바이트 배열
+     */
     public static byte[] getResourceBytesByPath(String filePath) throws IOException {
         String resourcePath = getStaticResourceByPath(filePath);
-        Path path = Paths.get(resourcePath);
-        return Files.readAllBytes(path);
+        File file = new File(resourcePath);
+        return readBytesFromFile(file);
+    }
+
+    private static byte[] readBytesFromFile(File file) throws IOException {
+        FileInputStream fis = null;
+        byte[] fileBytes = null;
+
+        try {
+            fis = new FileInputStream(file);
+            fileBytes = new byte[(int) file.length()];
+            fis.read(fileBytes);
+        } finally {
+            if (fis != null) {
+                fis.close();
+            }
+        }
+
+        return fileBytes;
     }
 }

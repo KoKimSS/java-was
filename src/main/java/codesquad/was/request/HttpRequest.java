@@ -1,4 +1,4 @@
-package codesquad.http.request;
+package codesquad.was.request;
 
 import java.net.URL;
 import java.util.HashMap;

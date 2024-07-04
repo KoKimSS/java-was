@@ -1,4 +1,4 @@
-package codesquad.http.response;
+package codesquad.was.response;
 
 import java.util.HashMap;
 import java.util.Map;

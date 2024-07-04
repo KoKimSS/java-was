@@ -1,6 +1,6 @@
-package codesquad.http.repository;
+package codesquad.was.repository;
 
-import codesquad.http.log.Log;
+import codesquad.was.log.Log;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,5 +1,6 @@
 package codesquad.http.user;
 
+import codesquad.was.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

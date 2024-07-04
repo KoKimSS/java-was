@@ -1,6 +1,7 @@
 package codesquad.http.mime;
 
 
+import codesquad.was.mime.Mime;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
