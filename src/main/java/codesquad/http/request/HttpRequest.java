@@ -80,7 +80,10 @@ public class HttpRequest {
 
     // Parse parameters from URL
     private void parseParameters(String query) {
-        System.out.println();
+        if(query == null || query.isEmpty()) {
+            return;
+        }
+
         String[] paramPairs = query.split("&");
         for (String pair : paramPairs) {
             String[] keyValue = pair.split("=");
