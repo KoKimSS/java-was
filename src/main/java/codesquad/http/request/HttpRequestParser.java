@@ -1,6 +1,7 @@
 package codesquad.http.request;
 
 import java.io.*;
+import java.net.URL;
 
 public class HttpRequestParser {
 
@@ -18,7 +19,7 @@ public class HttpRequestParser {
             throw new IOException("Invalid request line: " + requestLine);
         }
         request.setMethod(requestLineParts[0]);
-        request.setUrl(requestLineParts[1]);
+        request.setUrl(new URL(requestLineParts[1]));
         request.setVersion(requestLineParts[2]);
 
         // Parse headers

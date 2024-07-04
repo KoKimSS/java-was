@@ -1,12 +1,14 @@
 package codesquad.http.request;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
+
+    private URL url;
     private String method;
-    private String url;
-    private String uri;
+    private String urlPath;
     private String version;
     private Map<String, String> headers;
     private Map<String, String> parameters;
@@ -26,14 +28,14 @@ public class HttpRequest {
         this.method = method;
     }
 
-    public String getUrl() {
+    public URL getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(URL url) {
         this.url = url;
-        this.uri = url.split("\\?")[0];
-        parseParameters(url);
+        this.urlPath = url.getPath();
+        parseParameters(url.getQuery());
     }
 
     public String getVersion() {
@@ -72,22 +74,20 @@ public class HttpRequest {
         return parameters.get(key);
     }
 
-    public String getUri() {
-        return uri;
+    public String getUrlPath() {
+        return urlPath;
     }
 
     // Parse parameters from URL
-    private void parseParameters(String url) {
-        if (url.contains("?")) {
-            String paramString = url.substring(url.indexOf("?") + 1);
-            String[] paramPairs = paramString.split("&");
-            for (String pair : paramPairs) {
-                String[] keyValue = pair.split("=");
-                if (keyValue.length > 1) {
-                    parameters.put(keyValue[0], keyValue[1]);
-                } else {
-                    parameters.put(keyValue[0], "");
-                }
+    private void parseParameters(String query) {
+        System.out.println();
+        String[] paramPairs = query.split("&");
+        for (String pair : paramPairs) {
+            String[] keyValue = pair.split("=");
+            if (keyValue.length > 1) {
+                parameters.put(keyValue[0], keyValue[1]);
+            } else {
+                parameters.put(keyValue[0], "");
             }
         }
     }
