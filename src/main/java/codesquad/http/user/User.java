@@ -1,5 +1,7 @@
 package codesquad.http.user;
 
+import java.util.Objects;
+
 public class User {
     private String userId;
     private String username;
@@ -9,6 +11,18 @@ public class User {
         this.userId = userId;
         this.username = username;
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(userId, user.userId) && Objects.equals(username, user.username) && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, password);
     }
 
     public String getUserId() {

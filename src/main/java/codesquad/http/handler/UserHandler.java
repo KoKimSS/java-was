@@ -32,7 +32,7 @@ public class UserHandler {
             response.setStatusCode(200);
             //todo : 나중에 model 과 같은 객체를 사용하게 될 경우 리팩토링 필요
             //todo : 회원가입 로직을 수행하면 redirect 를 하게 할까?
-            String resourcePath = UrlResourceMap.getResourcePathByUri(request.getUri());
+            String resourcePath = UrlResourceMap.getResourcePathByUri(request.getUrlPath());
             response.setBody(ResourceGetter.getResourceBytesByPath(resourcePath));
             response.setContentType(ResourceGetter.getContentTypeByPath(resourcePath));
         }

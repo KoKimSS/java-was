@@ -15,7 +15,6 @@ public class UserRepository {
         if(!isExistUser(user.getUserId())){
             //todo : 예외처리로 변경
             put("User"+user.getUserId(),user);
-            printMap();
             return;
         }
         Log.log("이미 저장 된 유저입니다");

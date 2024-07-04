@@ -21,6 +21,10 @@ public class MemoryRepository {
         return map.containsKey(key);
     }
 
+    public static int getSize() {
+        return map.size();
+    }
+
     public static void printMap() {
         map.forEach((k, v) -> Log.log("key: " + k + " value: " + v));
     }

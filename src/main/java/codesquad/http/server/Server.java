@@ -28,7 +28,7 @@ public class Server {
 
         while (true) {
             // Queue 연결 하기 전 (   Queue 50
-
+            
             executorService.submit(() -> {
                 try (Socket clientSocket = serverSocket.accept()) {
                     webServer.handleClientRequest(clientSocket);

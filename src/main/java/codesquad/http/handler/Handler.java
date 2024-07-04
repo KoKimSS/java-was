@@ -20,7 +20,7 @@ public class Handler {
         HttpResponse response = new HttpResponse();
 
         // URL 매핑이 되면 비즈니스 로직 수행
-        if(request.getMethod().equals("GET") && request.getUri().equals("/registration")) {
+        if(request.getMethod().equals("GET") && request.getUrlPath().equals("/registration")) {
             userHandler.registration(request,response);
             return response;
         }
@@ -31,7 +31,7 @@ public class Handler {
 
     private static void staticResponse(HttpRequest request, HttpResponse response) throws IOException {
         // URL 매핑이 되지 않으면 정적인 파일만 보냄
-        String resourcePath = getResourcePathByUri(request.getUrl());
+        String resourcePath = getResourcePathByUri(request.getUrl().toString());
         byte[] body = getResourceBytesByPath(resourcePath);
 
         response.setBody(body);
