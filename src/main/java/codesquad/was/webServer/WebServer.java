@@ -1,5 +1,6 @@
 package codesquad.was.webServer;
 
+import codesquad.was.dispatcherServlet.DispatcherServlet;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.UserHandler;
 import codesquad.was.log.Log;
@@ -20,12 +21,12 @@ import java.net.Socket;
  * HttpRequest, HttpResponse 생성 및 반환
  */
 public class WebServer {
-    private final Handler handler;
+    private final DispatcherServlet dispatcherServlet;
 
     public WebServer() {
         UserRepository userRepository = new UserRepository();
         UserHandler userHandler = new UserHandler(userRepository);
-        this.handler = new Handler(userHandler);
+        this.dispatcherServlet = new DispatcherServlet();
     }
 
     public void handleClientRequest(Socket clientSocket) throws IOException, InternalServerException {
@@ -36,7 +37,7 @@ public class WebServer {
         Log.log(request.toString());
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
-        HttpResponse response = handler.handlerMapping(request);
+        HttpResponse response = dispatcherServlet.callHandler(request);
         Log.log(response.toString());
         OutputStream clientOutput = clientSocket.getOutputStream();
 
