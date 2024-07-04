@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Optional;
 
-public class UserHandler {
+public class UserHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(UserHandler.class);
     private final UserRepository userRepository;
 
@@ -31,6 +31,7 @@ public class UserHandler {
             User user = User.factoryMethod(userId, username, password);
             userRepository.save(user);
             response.setStatusCode(200);
+
         } catch (IllegalArgumentException e) {
             log.debug("Invalid username or password or userId: {}", e.getMessage());
         } catch (Exception e) {
@@ -42,5 +43,12 @@ public class UserHandler {
             response.setBody(ResourceGetter.getResourceBytesByPath(resourcePath));
             response.setContentType(ResourceGetter.getContentTypeByPath(resourcePath));
         }
+    }
+
+    @Override
+    public HttpResponse handleRequest(HttpRequest request) throws InternalServerException, IOException {
+        HttpResponse response = new HttpResponse();
+        registration(request,response);
+        return response;
     }
 }

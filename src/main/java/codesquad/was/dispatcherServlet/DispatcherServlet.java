@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class DispatcherServlet {
 
-    public HttpResponse callHandler(HttpRequest request) throws IOException {
+    public HttpResponse callHandler(HttpRequest request) throws IOException, InternalServerException {
         Handler handler = HandlerMap.getHandler(request.getMethod() , request.getUrlPath());
 
         if (handler == null) {
