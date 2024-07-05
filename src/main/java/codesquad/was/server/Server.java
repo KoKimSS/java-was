@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
 
@@ -20,6 +21,8 @@ public class Server {
     public Server(int threadPoolSize, int port, int backlog) throws IOException {
         this.port = port;
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
+        //ThreadPoolExecutor -> 미리 쓰레드를 10개 생성해 놓을 수 있음
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
         this.serverSocket = new ServerSocket(port,backlog);
     }
 
