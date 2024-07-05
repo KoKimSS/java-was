@@ -2,6 +2,7 @@ package codesquad.was.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class UrlPathResourceMap {
     private static final Map<String, String> resourcePathMap = new HashMap<String, String>() {{
@@ -40,8 +41,7 @@ public class UrlPathResourceMap {
         } else if (uri.endsWith(".ico")) {
             return "/static" + uri;
         }
-
         // URL 을 통한 자료요청은 매핑을 시켜 자료 반환
-        return resourcePathMap.get(uri);
+        return resourcePathMap.getOrDefault(uri, "/static"+uri);
     }
 }

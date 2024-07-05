@@ -42,6 +42,7 @@ public class ResourceGetter {
      * @return 파일의 바이트 배열
      */
     public static byte[] getResourceBytesByPath(String filePath) throws IOException {
+        System.out.println("파일패스"+filePath);
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
         return resourceAsStream.readAllBytes();
     }
