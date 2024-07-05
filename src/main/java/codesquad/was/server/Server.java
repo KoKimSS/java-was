@@ -23,7 +23,7 @@ public class Server {
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
         //ThreadPoolExecutor -> 미리 쓰레드를 10개 생성해 놓을 수 있음
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
-        this.serverSocket = new ServerSocket(port,backlog);
+        this.serverSocket = new ServerSocket(port, backlog);
     }
 
     public void run() throws IOException {
@@ -32,16 +32,24 @@ public class Server {
 
         while (true) {
             // Queue 연결 하기 전 (   Queue 50
-
-            executorService.submit(() -> {
-                try (Socket clientSocket = serverSocket.accept()) {
+            Socket clientSocket = serverSocket.accept();
+            executorService.execute(() -> {
+                try {
                     webServer.handleClientRequest(clientSocket);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InternalServerException e) {
+                } catch (IOException | InternalServerException e) {
                     throw new RuntimeException(e);
                 }
             });
+
+//            executorService.submit(() -> {
+//                try (Socket clientSocket = serverSocket.accept()) {
+//                    webServer.handleClientRequest(clientSocket);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (InternalServerException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
         }
     }
 
