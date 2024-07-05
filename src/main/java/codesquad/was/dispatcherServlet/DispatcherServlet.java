@@ -25,7 +25,10 @@ public class DispatcherServlet {
     private static HttpResponse staticResponse(HttpRequest request) throws IOException {
         // URL 매핑이 되지 않으면 정적인 파일만 보냄
         HttpResponse response = new HttpResponse();
-        String resourcePath = UrlPathResourceMap.getResourcePathByUrlPath(request.getUrl().getPath());
+        String urlPath = request.getUrl().getPath();
+        System.out.println("urlPath = " + urlPath);
+        String resourcePath = UrlPathResourceMap.getResourcePathByUrlPath(urlPath);
+        System.out.println("리로스 패스"+resourcePath);
         byte[] body = ResourceGetter.getResourceBytesByPath(resourcePath);
 
         response.setBody(body);
