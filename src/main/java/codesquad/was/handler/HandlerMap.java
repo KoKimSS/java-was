@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HandlerMap {
     private final static ConcurrentHashMap<String, Handler> handlerMap = new ConcurrentHashMap<>() {{
-        put("GET /registration", (Handler) new UserHandler(new UserRepository()));
+        put("GET /create", (Handler) new UserHandler(new UserRepository()));
     }};
 
     public static Handler getHandler(String method,String urlPath) {

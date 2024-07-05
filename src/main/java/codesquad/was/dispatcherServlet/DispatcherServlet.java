@@ -5,8 +5,8 @@ import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
 import codesquad.was.request.HttpRequest;
 import codesquad.was.response.HttpResponse;
-import codesquad.was.urlMapper.ResourceGetter;
-import codesquad.was.urlMapper.UrlPathResourceMap;
+import codesquad.was.util.ResourceGetter;
+import codesquad.was.util.UrlPathResourceMap;
 
 import java.io.IOException;
 

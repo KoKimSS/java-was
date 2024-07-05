@@ -1,4 +1,4 @@
-package codesquad.http.server;
+package codesquad.was.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

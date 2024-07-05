@@ -11,6 +11,7 @@ public class HttpRequestParser {
 
         // Parse request line
         String requestLine = reader.readLine();
+        System.out.println(requestLine);
         if (requestLine == null || requestLine.isEmpty()) {
             throw new IOException("Empty request line");
         }

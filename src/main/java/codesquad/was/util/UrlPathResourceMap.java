@@ -1,4 +1,4 @@
-package codesquad.was.urlMapper;
+package codesquad.was.util;
 
 import java.util.HashMap;
 import java.util.Map;

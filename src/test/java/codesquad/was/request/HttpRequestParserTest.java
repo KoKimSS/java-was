@@ -1,7 +1,5 @@
-package codesquad.http.request;
+package codesquad.was.request;
 
-import codesquad.was.request.HttpRequest;
-import codesquad.was.request.HttpRequestParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +14,7 @@ class HttpRequestParserTest {
     @Test
     void testParseHttpRequest() throws Exception {
         String rawRequest =
-                "GET http://example.com/index.html HTTP/1.1\r\n" +
+                "GET /index.html HTTP/1.1\r\n" +
                         "Host: example.com\r\n" +
                         "User-Agent: test-agent\r\n" +
                         "\r\n" +
@@ -36,7 +34,7 @@ class HttpRequestParserTest {
     @Test
     void testParseHttpRequestWithNoBody() throws Exception {
         String rawRequest =
-                "POST http://example.com/api HTTP/1.1\r\n" +
+                "POST /api HTTP/1.1\r\n" +
                         "Host: example.com\r\n" +
                         "User-Agent: test-agent\r\n" +
                         "\r\n";
@@ -55,7 +53,7 @@ class HttpRequestParserTest {
     @Test
     void testParseHttpRequestWithInvalidRequestLine() {
         String rawRequest =
-                "INVALID REQUEST LINE\r\n" +
+                "INVALID REQUESTLINE\r\n" +
                         "Host: example.com\r\n" +
                         "\r\n";
 

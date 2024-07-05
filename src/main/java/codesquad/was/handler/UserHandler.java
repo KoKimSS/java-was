@@ -1,7 +1,7 @@
 package codesquad.was.handler;
 
-import codesquad.was.urlMapper.ResourceGetter;
-import codesquad.was.urlMapper.UrlPathResourceMap;
+import codesquad.was.util.ResourceGetter;
+import codesquad.was.util.UrlPathResourceMap;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.user.User;
 import codesquad.was.user.UserRepository;
@@ -10,8 +10,11 @@ import codesquad.was.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+
+import static codesquad.was.util.ResourceGetter.readBytesFromFile;
 
 public class UserHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(UserHandler.class);
@@ -39,9 +42,9 @@ public class UserHandler implements Handler {
         } finally {
             //todo : 나중에 model 과 같은 객체를 사용하게 될 경우 리팩토링 필요
             //todo : 회원가입 로직을 수행하면 redirect 를 하게 할까?
-            String resourcePath = UrlPathResourceMap.getResourcePathByUrlPath(request.getUrlPath());
-            response.setBody(ResourceGetter.getResourceBytesByPath(resourcePath));
-            response.setContentType(ResourceGetter.getContentTypeByPath(resourcePath));
+            File file = new File("src/main/resources/static/index.html");
+            response.setBody(readBytesFromFile(file));
+            response.setContentType("text/html");
         }
     }
 

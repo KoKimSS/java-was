@@ -1,6 +1,5 @@
-package codesquad.http.request;
+package codesquad.was.request;
 
-import codesquad.was.request.HttpRequest;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
