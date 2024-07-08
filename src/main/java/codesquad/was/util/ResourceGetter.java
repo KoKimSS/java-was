@@ -44,6 +44,8 @@ public class ResourceGetter {
     public static byte[] getResourceBytesByPath(String filePath) throws IOException {
         System.out.println("파일패스"+filePath);
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
+        if(resourceAsStream == null) {
+            return new byte[0];}
         return resourceAsStream.readAllBytes();
     }
 

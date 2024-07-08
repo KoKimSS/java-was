@@ -78,8 +78,50 @@
     const url = `/create?userId=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}&name=${encodeURIComponent(name)}`;
 
     // 서버로 요청 보내기
-    window.location.href = url;
+    // window.location.href = url;
+
+    // POST 데이터를 JSON으로 준비
+    const data = {
+      userId: userId,
+      password: password,
+      name: name
+    };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Success:', data);
+              // 필요 시 성공 후 동작 추가
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
   }
+
+  //   // 서버로 요청 보내기
+  //   fetch('/create', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(data)
+  //   })
+  //           .then(response => response.json())
+  //           .then(data => {
+  //             console.log('Success:', data);
+  //             // 필요 시 성공 후 동작 추가
+  //           })
+  //           .catch((error) => {
+  //             console.error('Error:', error);
+  //           });
+  // }
 </script>
+
 </body>
 </html>
