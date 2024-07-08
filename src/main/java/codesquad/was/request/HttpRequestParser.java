@@ -1,6 +1,7 @@
-package codesquad.http.request;
+package codesquad.was.request;
 
 import java.io.*;
+import java.net.URL;
 
 public class HttpRequestParser {
 
@@ -10,6 +11,7 @@ public class HttpRequestParser {
 
         // Parse request line
         String requestLine = reader.readLine();
+        System.out.println(requestLine);
         if (requestLine == null || requestLine.isEmpty()) {
             throw new IOException("Empty request line");
         }
@@ -18,17 +20,23 @@ public class HttpRequestParser {
             throw new IOException("Invalid request line: " + requestLine);
         }
         request.setMethod(requestLineParts[0]);
-        request.setUrl(requestLineParts[1]);
+        String path = requestLineParts[1];
         request.setVersion(requestLineParts[2]);
 
         // Parse headers
         String headerLine;
+
         while (!(headerLine = reader.readLine()).isEmpty()) {
             String[] headerParts = headerLine.split(": ", 2);
             if (headerParts.length == 2) {
                 request.addHeader(headerParts[0], headerParts[1]);
             }
         }
+
+        String host = request.getHeaders().get("Host");
+        String protocol = "http";
+        URL url = new URL(protocol, host, path);
+        request.setUrl(url);
 
         // Parse body (if any)
         StringBuilder body = new StringBuilder();
@@ -39,5 +47,4 @@ public class HttpRequestParser {
 
         return request;
     }
-
 }

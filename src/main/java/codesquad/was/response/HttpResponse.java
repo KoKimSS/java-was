@@ -1,4 +1,4 @@
-package codesquad.http.response;
+package codesquad.was.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,11 +6,11 @@ import java.util.Map;
 public class HttpResponse {
     private int statusCode;
     private String statusMessage;
-    private Map<String, String> headers;
+    private String contentType;
+    private Map<String, String> headers = new HashMap<>();
     private byte[] body;
 
     public HttpResponse() {
-        headers = new HashMap<>();
     }
 
     public int getStatusCode() {
@@ -37,6 +37,10 @@ public class HttpResponse {
         this.headers = headers;
     }
 
+    public void setHeader(String key, String value) {
+        headers.put(key, value);
+    }
+
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
     }
@@ -47,6 +51,14 @@ public class HttpResponse {
 
     public void setBody(byte[] body) {
         this.body = body;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     @Override
