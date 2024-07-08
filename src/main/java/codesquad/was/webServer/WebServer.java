@@ -1,7 +1,6 @@
 package codesquad.was.webServer;
 
 import codesquad.was.dispatcherServlet.DispatcherServlet;
-import codesquad.was.handler.Handler;
 import codesquad.was.handler.UserHandler;
 import codesquad.was.log.Log;
 import codesquad.was.request.HttpRequest;
@@ -20,9 +19,10 @@ import java.net.Socket;
  * Socket 통신을 Http 로 변환하여 통신하게 해준다
  * HttpRequest, HttpResponse 생성 및 반환
  */
-public class WebServer {
-    private final DispatcherServlet dispatcherServlet;
 
+public class WebServer {
+
+    private final DispatcherServlet dispatcherServlet;
     public WebServer() {
         UserRepository userRepository = new UserRepository();
         UserHandler userHandler = new UserHandler(userRepository);

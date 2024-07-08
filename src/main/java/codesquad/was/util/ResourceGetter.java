@@ -1,9 +1,9 @@
 package codesquad.was.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import codesquad.was.exception.NotFoundException;
+
+import java.io.*;
 
 public class ResourceGetter {
 
@@ -41,12 +41,19 @@ public class ResourceGetter {
      * @param filePath 파일 경로Ï
      * @return 파일의 바이트 배열
      */
-    public static byte[] getResourceBytesByPath(String filePath) throws IOException {
+    public static byte[] getResourceBytesByPath(String filePath) throws IOException, NotFoundException {
         System.out.println("파일패스"+filePath);
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
         if(resourceAsStream == null) {
-            return new byte[0];}
-        return resourceAsStream.readAllBytes();
+            throw new NotFoundException("매핑되는 url이 없습니다");
+        }
+        byte[] bytes = resourceAsStream.readAllBytes();
+
+        if(bytes == null) {
+            throw new NotFoundException("매핑되는 url이 없습니다");
+        }
+
+        return bytes;
     }
 
     public static byte[] readBytesFromFile(File file) throws IOException {
