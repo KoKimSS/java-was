@@ -19,7 +19,8 @@ public class HttpRequestParser {
         if (requestLineParts.length != 3) {
             throw new IOException("Invalid request line: " + requestLine);
         }
-        request.setMethod(requestLineParts[0]);
+        String method = requestLineParts[0];
+        request.setMethod(method);
         String path = requestLineParts[1];
         request.setVersion(requestLineParts[2]);
 
@@ -37,7 +38,11 @@ public class HttpRequestParser {
         String protocol = "http";
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
-        parseBody(request, reader);
+
+        // GET이 아닌경우 body를 갖는다
+        if(!request.getMethod().equals("GET")){
+            parseBody(request, reader);
+        }
 
         return request;
     }
