@@ -4,6 +4,7 @@ import codesquad.was.exception.InternalServerException;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
 import codesquad.was.request.HttpRequest;
+import codesquad.was.response.HTTPStatusCode;
 import codesquad.was.response.HttpResponse;
 import codesquad.was.util.ResourceGetter;
 import codesquad.was.util.UrlPathResourceMap;
@@ -32,7 +33,7 @@ public class DispatcherServlet {
         byte[] body = ResourceGetter.getResourceBytesByPath(resourcePath);
 
         response.setBody(body);
-        response.setStatusCode(200);
+        response.setStatusCode(HTTPStatusCode.OK);
         response.setContentType(ResourceGetter.getContentTypeByPath(resourcePath));
 
         return response;

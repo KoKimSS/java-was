@@ -37,14 +37,23 @@ public class HttpRequestParser {
         String protocol = "http";
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
+        parseBody(request, reader);
 
+        return request;
+    }
+
+    private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
         // Parse body (if any)
+        String contentType = request.getHeaders().get("Content-Type");
+        request.setContentType(contentType);
         StringBuilder body = new StringBuilder();
+
         while (reader.ready()) {
             body.append((char) reader.read());
         }
-        request.setBody(body.toString());
 
-        return request;
+        if("application/x-www-form-urlencoded".equals(contentType)) {
+            request.parseParameters(body.toString());
+        }
     }
 }

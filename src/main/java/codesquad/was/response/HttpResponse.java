@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpResponse {
-    private int statusCode;
+    private HTTPStatusCode statusCode;
     private String statusMessage;
     private String contentType;
     private Map<String, String> headers = new HashMap<>();
@@ -13,11 +13,11 @@ public class HttpResponse {
     public HttpResponse() {
     }
 
-    public int getStatusCode() {
+    public HTTPStatusCode getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
+    public void setStatusCode(HTTPStatusCode statusCode) {
         this.statusCode = statusCode;
     }
 

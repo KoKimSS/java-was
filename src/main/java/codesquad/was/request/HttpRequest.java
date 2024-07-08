@@ -12,6 +12,7 @@ public class HttpRequest {
     private String version;
     private Map<String, String> headers;
     private Map<String, String> parameters;
+    private String contentType;
     private String body;
 
     public HttpRequest() {
@@ -79,7 +80,7 @@ public class HttpRequest {
     }
 
     // Parse parameters from URL
-    private void parseParameters(String query) {
+    public void parseParameters(String query) {
         if(query == null || query.isEmpty()) {
             return;
         }
@@ -105,5 +106,9 @@ public class HttpRequest {
                 ", parameters=" + parameters +
                 ", body='" + body + '\'' +
                 '}';
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

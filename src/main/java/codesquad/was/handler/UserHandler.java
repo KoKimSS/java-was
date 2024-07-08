@@ -1,5 +1,6 @@
 package codesquad.was.handler;
 
+import codesquad.was.response.HTTPStatusCode;
 import codesquad.was.util.ResourceGetter;
 import codesquad.was.util.UrlPathResourceMap;
 import codesquad.was.exception.InternalServerException;
@@ -33,18 +34,14 @@ public class UserHandler implements Handler {
 
             User user = User.factoryMethod(userId, username, password);
             userRepository.save(user);
-            response.setStatusCode(200);
-
         } catch (IllegalArgumentException e) {
             log.debug("Invalid username or password or userId: {}", e.getMessage());
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
         } finally {
-            //todo : 나중에 model 과 같은 객체를 사용하게 될 경우 리팩토링 필요
-            //todo : 회원가입 로직을 수행하면 redirect 를 하게 할까?
-            File file = new File("src/main/resources/static/index.html");
-            response.setBody(readBytesFromFile(file));
-            response.setContentType("text/html");
+            // 처리 완료 후 리디렉션
+            response.setStatusCode(HTTPStatusCode.FOUND); // 302 상태 코드 설정
+            response.setHeader("Location", "/index.html");
         }
     }
 
