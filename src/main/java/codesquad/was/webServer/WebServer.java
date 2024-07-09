@@ -1,5 +1,6 @@
 package codesquad.was.webServer;
 
+import codesquad.was.common.HTTPStatusCode;
 import codesquad.was.dispatcherServlet.DispatcherServlet;
 import codesquad.was.handler.UserHandler;
 import codesquad.was.log.Log;
@@ -23,28 +24,41 @@ import java.net.Socket;
 public class WebServer {
 
     private final DispatcherServlet dispatcherServlet;
+
     public WebServer() {
-        UserRepository userRepository = new UserRepository();
-        UserHandler userHandler = new UserHandler(userRepository);
         this.dispatcherServlet = new DispatcherServlet();
     }
 
-    public void handleClientRequest(Socket clientSocket) throws IOException, InternalServerException {
+    public void handleClientRequest(Socket clientSocket) throws IOException {
         InputStream inputStream = clientSocket.getInputStream();
-
-        // HttpRequest 생성
-        HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
-        Log.log(request.toString());
-
-        // 비즈니스 로직 수행 후 HttpResponse 생성
-        HttpResponse response = dispatcherServlet.callHandler(request);
-        Log.log(response.toString());
         OutputStream clientOutput = clientSocket.getOutputStream();
 
-        // 요청된 URL과 매핑된 리소스 파일 경로 가져오기
-        HttpResponseSender.sendHttpResponse(clientOutput, response);
-        clientOutput.flush();
-        clientOutput.close();
-    }
+        HttpRequest request = null;
+        // HttpRequest 생성
+        try {
+            request = HttpRequestParser.parseHttpRequest(inputStream);
+        } catch (IOException e) {
+            // 파싱이 불가능 할 때 return BAD_REQUEST
+            e.printStackTrace();
+            HttpResponse response = new HttpResponse();
+            response.setStatusCode(HTTPStatusCode.BAD_REQUEST);
+            HttpResponseSender.sendHttpResponse(clientOutput, response);
+            return;
+        }
 
+        Log.log(request.toString());
+
+
+        // 비즈니스 로직 수행 후 HttpResponse 생성
+        HttpResponse response = null;
+        try {
+            response = dispatcherServlet.callHandler(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.log(response.toString());
+
+        // outPutStream 에 HttpResponse 추가 !
+        HttpResponseSender.sendHttpResponse(clientOutput, response);
+    }
 }

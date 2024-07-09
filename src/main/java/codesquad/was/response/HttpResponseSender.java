@@ -29,16 +29,12 @@ public class HttpResponseSender {
         }
 
         headers.append("\r\n");
-        System.out.println(headers.toString());
 
         outputStream.write(statusLine.getBytes(StandardCharsets.UTF_8));
         outputStream.write(headers.toString().getBytes(StandardCharsets.UTF_8));
         if(body != null) {
             outputStream.write(body);
         }
-
-        System.out.println("리스폰드 센드");
-        outputStream.flush();
     }
 
 }

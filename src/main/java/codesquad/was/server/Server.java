@@ -5,6 +5,7 @@ import codesquad.was.log.Log;
 import codesquad.was.webServer.WebServer;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -36,7 +37,10 @@ public class Server {
             executorService.execute(() -> {
                 try {
                     webServer.handleClientRequest(clientSocket);
-                } catch (IOException | InternalServerException e) {
+                    OutputStream clientOutput = clientSocket.getOutputStream();
+                    clientOutput.flush();
+                    clientOutput.close();
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });

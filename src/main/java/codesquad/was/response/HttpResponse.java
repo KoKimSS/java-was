@@ -63,6 +63,15 @@ public class HttpResponse {
         this.contentType = contentType;
     }
 
+    public static void setRedirect(HttpResponse httpResponse, HTTPStatusCode statusCode, String redirectUrl) {
+        int code = statusCode.getCode();
+        // 3xx 로 시작하지 않으면 임의로 302로 변경
+        if(code/100!=3) statusCode = HTTPStatusCode.FOUND;
+
+        httpResponse.setStatusCode(statusCode);
+        httpResponse.setHeader("Location", redirectUrl);
+    }
+
     @Override
     public String toString() {
         return "HttpResponse{" +

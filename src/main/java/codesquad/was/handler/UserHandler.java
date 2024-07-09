@@ -36,8 +36,7 @@ public class UserHandler implements Handler {
             throw new InternalServerException(e.getMessage());
         } finally {
             // 처리 완료 후 리디렉션
-            response.setStatusCode(HTTPStatusCode.FOUND); // 302 상태 코드 설정
-            response.setHeader("Location", "/index.html");
+            HttpResponse.setRedirect(response,HTTPStatusCode.FOUND,"/index.html");
         }
     }
 

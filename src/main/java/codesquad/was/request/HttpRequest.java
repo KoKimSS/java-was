@@ -3,7 +3,9 @@ package codesquad.was.request;
 import codesquad.was.common.HttpMethod;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
@@ -12,8 +14,9 @@ public class HttpRequest {
     private HttpMethod method;
     private String urlPath;
     private String version;
-    private Map<String, String> headers;
-    private Map<String, String> parameters;
+    // Headers 클래스를 만들지 ,,?
+    private final Map<String, List<String>> headers;
+    private final Map<String, String> parameters;
     private String contentType;
     private String body;
 
@@ -53,16 +56,18 @@ public class HttpRequest {
         this.version = version;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
     public void addHeader(String key, String value) {
-        this.headers.put(key, value);
+        if (!headers.containsKey(key)) {
+            ArrayList<String> headerValue = new ArrayList<>();
+            headerValue.add(value);
+            headers.put(key, headerValue);
+            return;
+        }
+        this.headers.get(key).add(value);
     }
 
     public String getBody() {

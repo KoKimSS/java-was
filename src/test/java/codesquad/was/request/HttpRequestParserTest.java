@@ -1,6 +1,7 @@
 package codesquad.was.request;
 
 import codesquad.was.common.HttpMethod;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpRequestParserTest {
@@ -27,8 +29,8 @@ class HttpRequestParserTest {
         assertEquals(HttpMethod.GET, request.getMethod());
         assertEquals(new URL("http://example.com/index.html"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
-        assertEquals("example.com", request.getHeaders().get("Host"));
-        assertEquals("test-agent", request.getHeaders().get("User-Agent"));
+        assertEquals("[example.com]", request.getHeaders().get("Host").toString());
+        assertEquals("[test-agent]", request.getHeaders().get("User-Agent").toString());
         assertEquals("body content", request.getBody());
     }
 
@@ -46,8 +48,8 @@ class HttpRequestParserTest {
         assertEquals(HttpMethod.POST, request.getMethod());
         assertEquals(new URL("http://example.com/api"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
-        assertEquals("example.com", request.getHeaders().get("Host"));
-        assertEquals("test-agent", request.getHeaders().get("User-Agent"));
+        assertThat("[example.com]").isEqualTo(request.getHeaders().get("Host").toString());
+        assertThat("[test-agent]").isEqualTo(request.getHeaders().get("User-Agent").toString());
         assertEquals(request.getBody(),"");
     }
 

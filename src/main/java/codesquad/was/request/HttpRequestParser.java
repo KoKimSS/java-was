@@ -1,9 +1,9 @@
 package codesquad.was.request;
 
-import codesquad.was.common.HttpMethod;
 
 import java.io.*;
 import java.net.URL;
+import java.util.List;
 
 public class HttpRequestParser {
 
@@ -36,23 +36,25 @@ public class HttpRequestParser {
             }
         }
 
-        String host = request.getHeaders().get("Host");
+        String host = request.getHeaders().get("Host").get(0);
         String protocol = "http";
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
 
-        // GET이 아닌경우 body를 갖는다
-        if(!request.getMethod().equals(HttpMethod.GET)){
-            parseBody(request, reader);
-        }
+        // GET 이어도 body 를 갖을 수 있게 설정해 놓음
+        parseBody(request, reader);
 
         return request;
     }
 
     private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
         // Parse body (if any)
-        String contentType = request.getHeaders().get("Content-Type");
-        request.setContentType(contentType);
+        String contentType = null;
+        List<String> contentTypeList = request.getHeaders().getOrDefault("Content-Type",null);
+        if(contentTypeList != null) {
+            contentType = contentTypeList.get(0);
+            request.setContentType(contentType);
+        }
         StringBuilder body = new StringBuilder();
 
         while (reader.ready()) {
@@ -61,6 +63,11 @@ public class HttpRequestParser {
 
         if("application/x-www-form-urlencoded".equals(contentType)) {
             request.parseParameters(body.toString());
+            return;
+        }
+
+        if(contentType==null || contentType.isEmpty()) {
+            request.setBody(body.toString());
         }
     }
 }
