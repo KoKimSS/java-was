@@ -1,11 +1,10 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpHeaders;
 import codesquad.was.common.HttpMethod;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
@@ -15,13 +14,12 @@ public class HttpRequest {
     private String urlPath;
     private String version;
     // Headers 클래스를 만들지 ,,?
-    private final Map<String, List<String>> headers;
+    private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, String> parameters;
     private String contentType;
     private String body;
 
     public HttpRequest() {
-        headers = new HashMap<>();
         parameters = new HashMap<>();
     }
 
@@ -56,18 +54,12 @@ public class HttpRequest {
         this.version = version;
     }
 
-    public Map<String, List<String>> getHeaders() {
+    public HttpHeaders getHeaders() {
         return headers;
     }
 
     public void addHeader(String key, String value) {
-        if (!headers.containsKey(key)) {
-            ArrayList<String> headerValue = new ArrayList<>();
-            headerValue.add(value);
-            headers.put(key, headerValue);
-            return;
-        }
-        this.headers.get(key).add(value);
+        headers.addHeader(key, value);
     }
 
     public String getBody() {

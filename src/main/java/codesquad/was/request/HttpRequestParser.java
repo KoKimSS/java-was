@@ -36,7 +36,7 @@ public class HttpRequestParser {
             }
         }
 
-        String host = request.getHeaders().get("Host").get(0);
+        String host = request.getHeaders().getHeader("Host").get(0);
         String protocol = "http";
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
@@ -50,7 +50,7 @@ public class HttpRequestParser {
     private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
         // Parse body (if any)
         String contentType = null;
-        List<String> contentTypeList = request.getHeaders().getOrDefault("Content-Type",null);
+        List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
         if(contentTypeList != null) {
             contentType = contentTypeList.get(0);
             request.setContentType(contentType);
