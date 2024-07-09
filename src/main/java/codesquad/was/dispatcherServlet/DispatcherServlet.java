@@ -1,6 +1,8 @@
 package codesquad.was.dispatcherServlet;
 
+import codesquad.was.exception.CommonException;
 import codesquad.was.exception.InternalServerException;
+import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.exception.NotFoundException;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
@@ -14,20 +16,20 @@ import java.io.IOException;
 
 public class DispatcherServlet {
 
-    public HttpResponse callHandler(HttpRequest request) throws IOException, InternalServerException {
-        Handler handler = HandlerMap.getHandler(request.getMethod() , request.getUrlPath());
+    public HttpResponse callHandler(HttpRequest request) throws IOException{
+        Handler handler = HandlerMap.getHandler(request.getUrlPath());
         HttpResponse response = new HttpResponse();
-        if (handler == null) {
-            try {
-                return staticResponse(request,response);
-            } catch (NotFoundException e) {
-                response.setStatusCode(e.getHttpStatusCode());
-                System.out.println("에러코드:"+e.getHttpStatusCode().getCode());
-                return response;
-            }
-        }
 
-        return handler.handleRequest(request);
+        try {
+            if (handler == null) {
+                return staticResponse(request,response);
+            }
+            return handler.handleRequest(request);
+        } catch (CommonException e) {
+            response.setStatusCode(e.getHttpStatusCode());
+            System.out.println("에러코드:"+e.getHttpStatusCode().getCode());
+            return response;
+        }
     }
 
     private static HttpResponse staticResponse(HttpRequest request,HttpResponse response) throws IOException, NotFoundException {

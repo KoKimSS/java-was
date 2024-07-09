@@ -1,5 +1,6 @@
 package codesquad.was.handler;
 
+import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.response.HTTPStatusCode;
 import codesquad.was.util.ResourceGetter;
 import codesquad.was.util.UrlPathResourceMap;
@@ -46,9 +47,12 @@ public class UserHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handleRequest(HttpRequest request) throws InternalServerException, IOException {
+    public HttpResponse handleRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException {
         HttpResponse response = new HttpResponse();
-        registration(request,response);
-        return response;
+        if(request.getMethod().equals("POST")){
+            registration(request,response);
+            return response;
+        }
+        throw new MethodNotAllowedException();
     }
 }
