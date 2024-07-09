@@ -1,15 +1,14 @@
 package codesquad.was.response;
 
 import codesquad.was.common.HTTPStatusCode;
-
-import java.util.HashMap;
-import java.util.Map;
+import codesquad.was.common.HttpHeaders;
+import com.sun.net.httpserver.Headers;
 
 public class HttpResponse {
     private HTTPStatusCode statusCode;
     private String statusMessage;
     private String contentType;
-    private Map<String, String> headers = new HashMap<>();
+    private final HttpHeaders headers = new HttpHeaders();
     private byte[] body;
 
     public HttpResponse() {
@@ -31,21 +30,15 @@ public class HttpResponse {
         this.statusMessage = statusMessage;
     }
 
-    public Map<String, String> getHeaders() {
+    public HttpHeaders getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void setHeader(String key, String value) {
-        headers.put(key, value);
-    }
 
     public void addHeader(String key, String value) {
-        this.headers.put(key, value);
+        headers.addHeader(key, value);
     }
+
 
     public byte[] getBody() {
         return body;
@@ -69,7 +62,7 @@ public class HttpResponse {
         if(code/100!=3) statusCode = HTTPStatusCode.FOUND;
 
         httpResponse.setStatusCode(statusCode);
-        httpResponse.setHeader("Location", redirectUrl);
+        httpResponse.addHeader("Location", redirectUrl);
     }
 
     @Override

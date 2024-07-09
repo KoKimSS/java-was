@@ -3,6 +3,7 @@ package codesquad.was.response;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Set;
 
 public class HttpResponseSender {
@@ -23,9 +24,11 @@ public class HttpResponseSender {
         StringBuilder headers = new StringBuilder("Content-Type: " + response.getContentType() + "\r\n"
                 + "Content-Length: " + (body == null ? 0 : body.length) + "\r\n");
 
-        for(String key : response.getHeaders().keySet()) {
-
-            headers.append(key).append(": ").append(response.getHeaders().get(key)).append("\r\n");
+        for(String key : response.getHeaders().getHeaderNames()) {
+            List<String> values = response.getHeaders().getHeader(key);
+            for (String value : values) {
+                headers.append(key).append(": ").append(value).append("\r\n");
+            }
         }
 
         headers.append("\r\n");

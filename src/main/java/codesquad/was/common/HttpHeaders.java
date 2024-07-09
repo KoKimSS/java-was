@@ -1,9 +1,6 @@
 package codesquad.was.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HttpHeaders {
     private final Map<String, List<String>> headers = new HashMap<>();
@@ -17,6 +14,10 @@ public class HttpHeaders {
     }
     public List<String> getHeader(String header) {
         return headers.getOrDefault(header,null);
+    }
+
+    public Set<String> getHeaderNames() {
+        return headers.keySet();
     }
 
     @Override
