@@ -1,5 +1,7 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpMethod;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Map;
 public class HttpRequest {
 
     private URL url;
-    private String method;
+    private HttpMethod method;
     private String urlPath;
     private String version;
     private Map<String, String> headers;
@@ -21,11 +23,15 @@ public class HttpRequest {
     }
 
     // Getters and Setters
-    public String getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
     public void setMethod(String method) {
+        this.method = HttpMethod.getHttpMethodByString(method);
+    }
+
+    public void setMethod(HttpMethod method) {
         this.method = method;
     }
 

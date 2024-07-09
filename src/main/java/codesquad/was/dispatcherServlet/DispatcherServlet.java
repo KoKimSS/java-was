@@ -1,13 +1,11 @@
 package codesquad.was.dispatcherServlet;
 
 import codesquad.was.exception.CommonException;
-import codesquad.was.exception.InternalServerException;
-import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.exception.NotFoundException;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
 import codesquad.was.request.HttpRequest;
-import codesquad.was.response.HTTPStatusCode;
+import codesquad.was.common.HTTPStatusCode;
 import codesquad.was.response.HttpResponse;
 import codesquad.was.util.ResourceGetter;
 import codesquad.was.util.UrlPathResourceMap;

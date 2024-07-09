@@ -1,6 +1,6 @@
 package codesquad.was.exception;
 
-import codesquad.was.response.HTTPStatusCode;
+import codesquad.was.common.HTTPStatusCode;
 
 public class MethodNotAllowedException extends CommonException{
     public MethodNotAllowedException() {

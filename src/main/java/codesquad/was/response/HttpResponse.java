@@ -1,5 +1,7 @@
 package codesquad.was.response;
 
+import codesquad.was.common.HTTPStatusCode;
+
 import java.util.HashMap;
 import java.util.Map;
 

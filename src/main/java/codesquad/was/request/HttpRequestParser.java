@@ -1,5 +1,7 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpMethod;
+
 import java.io.*;
 import java.net.URL;
 
@@ -40,7 +42,7 @@ public class HttpRequestParser {
         request.setUrl(url);
 
         // GET이 아닌경우 body를 갖는다
-        if(!request.getMethod().equals("GET")){
+        if(!request.getMethod().equals(HttpMethod.GET)){
             parseBody(request, reader);
         }
 

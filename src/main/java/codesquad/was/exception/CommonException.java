@@ -1,6 +1,6 @@
 package codesquad.was.exception;
 
-import codesquad.was.response.HTTPStatusCode;
+import codesquad.was.common.HTTPStatusCode;
 
 public class CommonException extends Exception{
     private HTTPStatusCode httpStatusCode;

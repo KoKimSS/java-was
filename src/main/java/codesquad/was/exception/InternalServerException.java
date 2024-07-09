@@ -1,6 +1,6 @@
 package codesquad.was.exception;
 
-import codesquad.was.response.HTTPStatusCode;
+import codesquad.was.common.HTTPStatusCode;
 
 public class InternalServerException extends CommonException{
     public InternalServerException(String message) {

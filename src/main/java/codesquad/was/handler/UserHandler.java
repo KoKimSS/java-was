@@ -1,9 +1,8 @@
 package codesquad.was.handler;
 
+import codesquad.was.common.HttpMethod;
 import codesquad.was.exception.MethodNotAllowedException;
-import codesquad.was.response.HTTPStatusCode;
-import codesquad.was.util.ResourceGetter;
-import codesquad.was.util.UrlPathResourceMap;
+import codesquad.was.common.HTTPStatusCode;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.user.User;
 import codesquad.was.user.UserRepository;
@@ -12,11 +11,7 @@ import codesquad.was.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
-
-import static codesquad.was.util.ResourceGetter.readBytesFromFile;
 
 public class UserHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(UserHandler.class);
@@ -26,7 +21,7 @@ public class UserHandler implements Handler {
         this.userRepository = userRepository;
     }
 
-    public void registration(HttpRequest request, HttpResponse response) throws InternalServerException, IOException {
+    public void registration(HttpRequest request, HttpResponse response) throws InternalServerException{
         try {
             // 세개 중 하나라도 없으면 회원가입 로직 skip
             String userId = Optional.ofNullable(request.getParameter("userId")).orElseThrow(IllegalArgumentException::new);
@@ -47,12 +42,21 @@ public class UserHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handleRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException {
+    public HttpResponse handleRequest(HttpRequest request) throws InternalServerException, MethodNotAllowedException {
+        return doBusinessByMethod(request);
+    }
+
+    private HttpResponse doBusinessByMethod(HttpRequest request) throws InternalServerException, MethodNotAllowedException {
         HttpResponse response = new HttpResponse();
-        if(request.getMethod().equals("POST")){
-            registration(request,response);
+
+        //todo : 무조건 HttpMethod 중 하나로 매칭이 되게 해야한다
+        // 검증을 어떻게 해야 할까?
+
+        if(request.getMethod().equals(HttpMethod.POST)){
+            registration(request, response);
             return response;
         }
+
         throw new MethodNotAllowedException();
     }
 }

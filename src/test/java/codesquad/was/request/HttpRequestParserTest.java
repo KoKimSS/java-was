@@ -1,5 +1,6 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpMethod;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -23,7 +24,7 @@ class HttpRequestParserTest {
         InputStream inputStream = new ByteArrayInputStream(rawRequest.getBytes());
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
 
-        assertEquals("GET", request.getMethod());
+        assertEquals(HttpMethod.GET, request.getMethod());
         assertEquals(new URL("http://example.com/index.html"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
         assertEquals("example.com", request.getHeaders().get("Host"));
@@ -42,7 +43,7 @@ class HttpRequestParserTest {
         InputStream inputStream = new ByteArrayInputStream(rawRequest.getBytes());
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
 
-        assertEquals("POST", request.getMethod());
+        assertEquals(HttpMethod.POST, request.getMethod());
         assertEquals(new URL("http://example.com/api"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
         assertEquals("example.com", request.getHeaders().get("Host"));
