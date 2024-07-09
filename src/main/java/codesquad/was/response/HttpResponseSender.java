@@ -1,9 +1,12 @@
 package codesquad.was.response;
 
+import codesquad.was.common.HttpCookie;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class HttpResponseSender {
@@ -31,6 +34,8 @@ public class HttpResponseSender {
             }
         }
 
+        Map<String, HttpCookie> cookies = response.getCookies();
+        cookies.forEach((key, cookie) -> headers.append("Set-Cookie: ").append(cookie.toString()).append("\r\n"));
         headers.append("\r\n");
 
         outputStream.write(statusLine.getBytes(StandardCharsets.UTF_8));

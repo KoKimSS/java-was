@@ -3,6 +3,8 @@ package codesquad.was.mime;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,5 +54,11 @@ public class MimeTest {
         assertThrows(IllegalArgumentException.class, () -> {
             Mime.fromString("unknown/mime-type");
         });
+    }
+
+    @Test
+    public void createSession() {
+        String sessionId = UUID.randomUUID().toString();
+        System.out.println(sessionId);
     }
 }

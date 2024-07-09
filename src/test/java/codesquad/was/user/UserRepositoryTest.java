@@ -1,5 +1,6 @@
 package codesquad.was.user;
 
+import codesquad.was.exception.BadRequestException;
 import codesquad.was.repository.MemoryRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void get() {
+    void get() throws BadRequestException {
         //given
         String id = "seung123";
         String name = "seungsu";

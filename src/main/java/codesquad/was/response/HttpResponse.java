@@ -1,16 +1,29 @@
 package codesquad.was.response;
 
+import codesquad.was.common.HttpCookie;
 import codesquad.was.common.HttpStatusCode;
 import codesquad.was.common.HttpHeaders;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpResponse {
     private HttpStatusCode statusCode;
     private String statusMessage;
     private String contentType;
     private final HttpHeaders headers = new HttpHeaders();
-    private byte[] body;
+    private final Map<String, HttpCookie> cookies = new HashMap<>();
 
+    private byte[] body;
     public HttpResponse() {
+    }
+
+    public Map<String, HttpCookie> getCookies() {
+        return cookies;
+    }
+
+    public void addCookie(HttpCookie cookie) {
+        cookies.putIfAbsent(cookie.getName(),cookie);
     }
 
     public HttpStatusCode getStatusCode() {

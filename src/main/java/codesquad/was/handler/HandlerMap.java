@@ -1,12 +1,11 @@
 package codesquad.was.handler;
 
-import codesquad.was.user.UserRepository;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HandlerMap {
     private final static ConcurrentHashMap<String, Handler> handlerMap = new ConcurrentHashMap<>() {{
-        put("/create", new UserHandler(new UserRepository()));
+        put("/create", SingUpHandler.singUpHandler);
+        put("/login", LoginHandler.loginHandler);
     }};
 
     public static Handler getHandler(String urlPath) {

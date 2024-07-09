@@ -1,8 +1,6 @@
 package codesquad.was.handler;
 
-import codesquad.was.common.HttpMethod;
 import codesquad.was.exception.BadRequestException;
-import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.common.HttpStatusCode;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.user.User;
@@ -12,11 +10,14 @@ import codesquad.was.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserHandler implements Handler {
-    private static final Logger log = LoggerFactory.getLogger(UserHandler.class);
+public class SingUpHandler implements Handler {
+    private static final Logger log = LoggerFactory.getLogger(SingUpHandler.class);
     private final UserRepository userRepository;
 
-    public UserHandler(UserRepository userRepository) {
+    // 싱글톤 으로 구현
+    public static SingUpHandler singUpHandler = new SingUpHandler(new UserRepository());
+
+    private SingUpHandler(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

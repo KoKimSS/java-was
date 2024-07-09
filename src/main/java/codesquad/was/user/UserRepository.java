@@ -1,5 +1,6 @@
 package codesquad.was.user;
 
+import codesquad.was.exception.BadRequestException;
 import codesquad.was.log.Log;
 import codesquad.was.repository.MemoryRepository;
 
@@ -20,12 +21,25 @@ public class UserRepository {
         Log.log("이미 저장 된 유저입니다");
     }
 
+    public User getUserByIdAndPw(String userId,String password) throws BadRequestException {
+        User user = get(userId);
+        if(user == null){
+            return null;
+        }
+        if(user.getPassword().equals(password)){
+            return user;
+        }
+        return null;
+    }
+
     private static boolean isExistUser(String userId) {
         return containsKey("User" + userId);
     }
 
-    public User get(String userId) {
-        return (User) MemoryRepository.get("User"+userId).orElseThrow(IllegalArgumentException::new);
+    public User get(String userId) throws BadRequestException {
+        System.out.println("유저아이디"+userId);
+        Object o = MemoryRepository.get("User" + userId);
+        return (User) o;
     }
 
 

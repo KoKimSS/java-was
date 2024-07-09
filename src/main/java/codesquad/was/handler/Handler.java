@@ -10,6 +10,7 @@ import codesquad.was.response.HttpResponse;
 import java.io.IOException;
 
 public interface Handler {
+
     HttpResponse handlePOSTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException, BadRequestException;
     HttpResponse handleGETRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException;
     HttpResponse handlePUTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException;

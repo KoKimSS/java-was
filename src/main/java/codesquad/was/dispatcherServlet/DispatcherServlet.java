@@ -23,7 +23,14 @@ public class DispatcherServlet {
                 return staticResponse(request);
             }
             HttpResponse response = handler.doBusinessByMethod(request);
-            if(response == null) throw new MethodNotAllowedException();
+            if(response == null) {
+                try {
+                    return staticResponse(request);
+                } catch (Exception e) {
+                    throw new MethodNotAllowedException();
+                }
+            }
+
             return response;
         } catch (CommonException e) {
             HttpResponse response = new HttpResponse();

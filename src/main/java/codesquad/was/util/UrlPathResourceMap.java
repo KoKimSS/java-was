@@ -9,6 +9,8 @@ public class UrlPathResourceMap {
         // 간단한 예제 URL 패턴과 리소스 매핑 설정
         put("/", "/static/index.html");
         put("/index.html", "/static/index.html");
+        put("/login", "/static/login/index.html");
+        put("/user/login_failed.html", "/static/login/index.html");
         put("/about", "about.html");
         put("/contact", "contact.html");
         put("/css/styles.css", "styles.css");
