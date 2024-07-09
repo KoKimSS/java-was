@@ -1,15 +1,12 @@
 package codesquad.was.webServer;
 
-import codesquad.was.common.HTTPStatusCode;
+import codesquad.was.common.HttpStatusCode;
 import codesquad.was.dispatcherServlet.DispatcherServlet;
-import codesquad.was.handler.UserHandler;
 import codesquad.was.log.Log;
 import codesquad.was.request.HttpRequest;
 import codesquad.was.request.HttpRequestParser;
 import codesquad.was.response.HttpResponse;
 import codesquad.was.response.HttpResponseSender;
-import codesquad.was.user.UserRepository;
-import codesquad.was.exception.InternalServerException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +38,7 @@ public class WebServer {
             // 파싱이 불가능 할 때 return BAD_REQUEST
             e.printStackTrace();
             HttpResponse response = new HttpResponse();
-            response.setStatusCode(HTTPStatusCode.BAD_REQUEST);
+            response.setStatusCode(HttpStatusCode.BAD_REQUEST);
             HttpResponseSender.sendHttpResponse(clientOutput, response);
             return;
         }

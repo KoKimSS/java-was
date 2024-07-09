@@ -1,13 +1,12 @@
 package codesquad.was.response;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.OutputStream;
 
 import static org.assertj.core.api.Assertions.*;
 
-import codesquad.was.common.HTTPStatusCode;
+import codesquad.was.common.HttpStatusCode;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -30,7 +29,7 @@ class HttpResponseSenderTest {
 
     @Test
     void sendHttpResponse_withValidResponse_writesCorrectOutput() throws IOException {
-        response.setStatusCode(HTTPStatusCode.OK);
+        response.setStatusCode(HttpStatusCode.OK);
         response.setContentType("text/html");
         byte[] bytes = "Hello, World!".getBytes(StandardCharsets.UTF_8);
         response.setBody(bytes);
@@ -54,7 +53,7 @@ class HttpResponseSenderTest {
 
     @Test
     void sendHttpResponse_withNoBody_writesCorrectOutput() throws IOException {
-        response.setStatusCode(HTTPStatusCode.NO_CONTENT);
+        response.setStatusCode(HttpStatusCode.NO_CONTENT);
         response.setContentType("text/plain");
 
         HttpResponseSender.sendHttpResponse(outputStream, response);
@@ -72,7 +71,7 @@ class HttpResponseSenderTest {
 
     @Test
     void sendHttpResponse_withMultipleHeaders_writesCorrectOutput() throws IOException {
-        response.setStatusCode(HTTPStatusCode.OK);
+        response.setStatusCode(HttpStatusCode.OK);
         response.setContentType("application/json");
         byte[] bytes = "{\"message\":\"success\"}".getBytes(StandardCharsets.UTF_8);
         response.setBody(bytes);

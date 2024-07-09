@@ -1,5 +1,5 @@
 package codesquad.was.common;
-public enum HTTPStatusCode {
+public enum HttpStatusCode {
     OK(200, "OK"),
     CREATED(201, "Created"),
     ACCEPTED(202, "Accepted"),
@@ -32,7 +32,7 @@ public enum HTTPStatusCode {
     private final int code;
     private final String description;
 
-    HTTPStatusCode(int code, String description) {
+    HttpStatusCode(int code, String description) {
         this.code = code;
         this.description = description;
     }

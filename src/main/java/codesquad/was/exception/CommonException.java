@@ -1,15 +1,15 @@
 package codesquad.was.exception;
 
-import codesquad.was.common.HTTPStatusCode;
+import codesquad.was.common.HttpStatusCode;
 
 public class CommonException extends Exception{
-    private HTTPStatusCode httpStatusCode;
+    private HttpStatusCode httpStatusCode;
     private String message;
 
     public CommonException() {
     }
 
-    public CommonException(String message, HTTPStatusCode httpStatusCode) {
+    public CommonException(String message, HttpStatusCode httpStatusCode) {
         this.message = message;
         this.httpStatusCode = httpStatusCode;
     }
@@ -20,7 +20,7 @@ public class CommonException extends Exception{
         return message;
     }
 
-    public HTTPStatusCode getHttpStatusCode() {
+    public HttpStatusCode getHttpStatusCode() {
         return httpStatusCode;
     }
 

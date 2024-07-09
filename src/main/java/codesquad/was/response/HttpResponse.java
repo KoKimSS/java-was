@@ -1,11 +1,10 @@
 package codesquad.was.response;
 
-import codesquad.was.common.HTTPStatusCode;
+import codesquad.was.common.HttpStatusCode;
 import codesquad.was.common.HttpHeaders;
-import com.sun.net.httpserver.Headers;
 
 public class HttpResponse {
-    private HTTPStatusCode statusCode;
+    private HttpStatusCode statusCode;
     private String statusMessage;
     private String contentType;
     private final HttpHeaders headers = new HttpHeaders();
@@ -14,11 +13,11 @@ public class HttpResponse {
     public HttpResponse() {
     }
 
-    public HTTPStatusCode getStatusCode() {
+    public HttpStatusCode getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(HTTPStatusCode statusCode) {
+    public void setStatusCode(HttpStatusCode statusCode) {
         this.statusCode = statusCode;
     }
 
@@ -56,10 +55,10 @@ public class HttpResponse {
         this.contentType = contentType;
     }
 
-    public static void setRedirect(HttpResponse httpResponse, HTTPStatusCode statusCode, String redirectUrl) {
+    public static void setRedirect(HttpResponse httpResponse, HttpStatusCode statusCode, String redirectUrl) {
         int code = statusCode.getCode();
         // 3xx 로 시작하지 않으면 임의로 302로 변경
-        if(code/100!=3) statusCode = HTTPStatusCode.FOUND;
+        if(code/100!=3) statusCode = HttpStatusCode.FOUND;
 
         httpResponse.setStatusCode(statusCode);
         httpResponse.addHeader("Location", redirectUrl);
