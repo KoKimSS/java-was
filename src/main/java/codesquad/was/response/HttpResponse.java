@@ -1,23 +1,23 @@
 package codesquad.was.response;
 
-import java.util.HashMap;
-import java.util.Map;
+import codesquad.was.common.HttpStatusCode;
+import codesquad.was.common.HttpHeaders;
 
 public class HttpResponse {
-    private int statusCode;
+    private HttpStatusCode statusCode;
     private String statusMessage;
     private String contentType;
-    private Map<String, String> headers = new HashMap<>();
+    private final HttpHeaders headers = new HttpHeaders();
     private byte[] body;
 
     public HttpResponse() {
     }
 
-    public int getStatusCode() {
+    public HttpStatusCode getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
+    public void setStatusCode(HttpStatusCode statusCode) {
         this.statusCode = statusCode;
     }
 
@@ -29,21 +29,15 @@ public class HttpResponse {
         this.statusMessage = statusMessage;
     }
 
-    public Map<String, String> getHeaders() {
+    public HttpHeaders getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void setHeader(String key, String value) {
-        headers.put(key, value);
-    }
 
     public void addHeader(String key, String value) {
-        this.headers.put(key, value);
+        headers.addHeader(key, value);
     }
+
 
     public byte[] getBody() {
         return body;
@@ -59,6 +53,15 @@ public class HttpResponse {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public static void setRedirect(HttpResponse httpResponse, HttpStatusCode statusCode, String redirectUrl) {
+        int code = statusCode.getCode();
+        // 3xx 로 시작하지 않으면 임의로 302로 변경
+        if(code/100!=3) statusCode = HttpStatusCode.FOUND;
+
+        httpResponse.setStatusCode(statusCode);
+        httpResponse.addHeader("Location", redirectUrl);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpHeaders;
+import codesquad.was.common.HttpMethod;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,24 +10,29 @@ import java.util.Map;
 public class HttpRequest {
 
     private URL url;
-    private String method;
+    private HttpMethod method;
     private String urlPath;
     private String version;
-    private Map<String, String> headers;
-    private Map<String, String> parameters;
+    // Headers 클래스를 만들지 ,,?
+    private final HttpHeaders headers = new HttpHeaders();
+    private final Map<String, String> parameters;
+    private String contentType;
     private String body;
 
     public HttpRequest() {
-        headers = new HashMap<>();
         parameters = new HashMap<>();
     }
 
     // Getters and Setters
-    public String getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
     public void setMethod(String method) {
+        this.method = HttpMethod.getHttpMethodByString(method);
+    }
+
+    public void setMethod(HttpMethod method) {
         this.method = method;
     }
 
@@ -46,16 +54,12 @@ public class HttpRequest {
         this.version = version;
     }
 
-    public Map<String, String> getHeaders() {
+    public HttpHeaders getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
     public void addHeader(String key, String value) {
-        this.headers.put(key, value);
+        headers.addHeader(key, value);
     }
 
     public String getBody() {
@@ -79,7 +83,7 @@ public class HttpRequest {
     }
 
     // Parse parameters from URL
-    private void parseParameters(String query) {
+    public void parseParameters(String query) {
         if(query == null || query.isEmpty()) {
             return;
         }
@@ -105,5 +109,9 @@ public class HttpRequest {
                 ", parameters=" + parameters +
                 ", body='" + body + '\'' +
                 '}';
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

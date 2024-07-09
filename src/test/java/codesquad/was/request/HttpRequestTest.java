@@ -43,7 +43,7 @@ class HttpRequestTest {
                 "method='POST'" +
                 ", url='http://example.com/page?name=value'" +
                 ", version='HTTP/1.1'" +
-                ", headers={Content-Type=application/json}" +
+                ", headers={Content-Type=[application/json]}" +
                 ", parameters={name=value}" +
                 ", body='{\"key\":\"value\"}'" +
                 '}';

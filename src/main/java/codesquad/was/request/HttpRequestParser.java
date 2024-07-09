@@ -1,7 +1,9 @@
 package codesquad.was.request;
 
+
 import java.io.*;
 import java.net.URL;
+import java.util.List;
 
 public class HttpRequestParser {
 
@@ -19,7 +21,8 @@ public class HttpRequestParser {
         if (requestLineParts.length != 3) {
             throw new IOException("Invalid request line: " + requestLine);
         }
-        request.setMethod(requestLineParts[0]);
+        String method = requestLineParts[0];
+        request.setMethod(method);
         String path = requestLineParts[1];
         request.setVersion(requestLineParts[2]);
 
@@ -33,18 +36,38 @@ public class HttpRequestParser {
             }
         }
 
-        String host = request.getHeaders().get("Host");
+        String host = request.getHeaders().getHeader("Host").get(0);
         String protocol = "http";
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
 
+        // GET 이어도 body 를 갖을 수 있게 설정해 놓음
+        parseBody(request, reader);
+
+        return request;
+    }
+
+    private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
         // Parse body (if any)
+        String contentType = null;
+        List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
+        if(contentTypeList != null) {
+            contentType = contentTypeList.get(0);
+            request.setContentType(contentType);
+        }
         StringBuilder body = new StringBuilder();
+
         while (reader.ready()) {
             body.append((char) reader.read());
         }
-        request.setBody(body.toString());
 
-        return request;
+        if("application/x-www-form-urlencoded".equals(contentType)) {
+            request.parseParameters(body.toString());
+            return;
+        }
+
+        if(contentType==null || contentType.isEmpty()) {
+            request.setBody(body.toString());
+        }
     }
 }

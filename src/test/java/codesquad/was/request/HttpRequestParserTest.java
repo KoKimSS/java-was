@@ -1,5 +1,6 @@
 package codesquad.was.request;
 
+import codesquad.was.common.HttpMethod;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpRequestParserTest {
@@ -23,11 +25,11 @@ class HttpRequestParserTest {
         InputStream inputStream = new ByteArrayInputStream(rawRequest.getBytes());
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
 
-        assertEquals("GET", request.getMethod());
+        assertEquals(HttpMethod.GET, request.getMethod());
         assertEquals(new URL("http://example.com/index.html"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
-        assertEquals("example.com", request.getHeaders().get("Host"));
-        assertEquals("test-agent", request.getHeaders().get("User-Agent"));
+        assertEquals("[example.com]", request.getHeaders().getHeader("Host").toString());
+        assertEquals("[test-agent]", request.getHeaders().getHeader("User-Agent").toString());
         assertEquals("body content", request.getBody());
     }
 
@@ -42,11 +44,11 @@ class HttpRequestParserTest {
         InputStream inputStream = new ByteArrayInputStream(rawRequest.getBytes());
         HttpRequest request = HttpRequestParser.parseHttpRequest(inputStream);
 
-        assertEquals("POST", request.getMethod());
+        assertEquals(HttpMethod.POST, request.getMethod());
         assertEquals(new URL("http://example.com/api"), request.getUrl());
         assertEquals("HTTP/1.1", request.getVersion());
-        assertEquals("example.com", request.getHeaders().get("Host"));
-        assertEquals("test-agent", request.getHeaders().get("User-Agent"));
+        assertThat("[example.com]").isEqualTo(request.getHeaders().getHeader("Host").toString());
+        assertThat("[test-agent]").isEqualTo(request.getHeaders().getHeader("User-Agent").toString());
         assertEquals(request.getBody(),"");
     }
 
