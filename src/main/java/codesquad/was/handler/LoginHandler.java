@@ -49,7 +49,10 @@ public class LoginHandler implements Handler {
         HttpResponse.setRedirect(response, HttpStatusCode.FOUND, "/index.html");
         HttpCookie sessionCookie = new HttpCookie(sessionStr, sessionId);
         sessionCookie.setMaxAge(sessionLong);
+
+        HttpCookie cookie = new HttpCookie("cookie", "123456");
         response.addCookie(sessionCookie);
+        response.addCookie(cookie);
         return response;
     }
 

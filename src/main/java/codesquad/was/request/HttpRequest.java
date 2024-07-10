@@ -18,6 +18,7 @@ public class HttpRequest {
     private final Map<String, String> parameters;
     private String contentType;
     private String body;
+    //Cookie
     private final Map<String, String> cookies = new HashMap<>();
     private Session session;
 
