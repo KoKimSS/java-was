@@ -1,7 +1,9 @@
 package codesquad.was.response;
 
+import codesquad.was.common.HttpCookie;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -12,9 +14,12 @@ import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class HttpResponseSenderTest {
@@ -91,5 +96,31 @@ class HttpResponseSenderTest {
         assertEquals("HTTP/1.1 200\r\n", statusLine);
         assertEquals("Content-Type: application/json\r\nContent-Length: "+bytes.length+"\r\nX-Custom-Header: value1\r\nX-Custom-Header: value2\r\n\r\n", headers);
         assertEquals("{\"message\":\"success\"}", body);
+    }
+
+    @Test
+    public void testSendHttpResponse_WithCookies() throws Exception {
+        // OutputStream 모킹
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // HttpResponse 객체 생성 및 설정
+        HttpResponse response = new HttpResponse();
+        response.setStatusCode(HttpStatusCode.OK);
+        response.setContentType("text/html");
+        response.setBody("Hello, World!".getBytes());
+
+        // 쿠키 설정
+        response.addCookie(new HttpCookie("sessionId", "abc123"));
+        response.addCookie(new HttpCookie("userId", "789xyz"));
+
+        // HTTP 응답 전송
+        HttpResponseSender.sendHttpResponse(outputStream, response);
+
+        // 전송된 데이터 확인
+        String httpResponseString = outputStream.toString();
+
+        // 쿠키 헤더가 포함되었는지 확인
+        assertTrue(httpResponseString.contains("Set-Cookie: sessionId=abc123"));
+        assertTrue(httpResponseString.contains("Set-Cookie: userId=789xyz"));
     }
 }
