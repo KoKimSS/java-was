@@ -82,8 +82,10 @@ public class HttpResponse {
         return "HttpResponse{" +
                 "statusCode=" + statusCode +
                 ", statusMessage='" + statusMessage + '\'' +
+                ", contentType='" + contentType + '\'' +
                 ", headers=" + headers +
-                ", body='" + body + '\'' +
+                ", cookies=" + cookies +
+//                ", body=" + (body != null ? new String(body) : "null") +
                 '}';
     }
 }

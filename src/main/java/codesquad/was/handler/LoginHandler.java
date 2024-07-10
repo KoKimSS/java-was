@@ -6,11 +6,14 @@ import codesquad.was.exception.BadRequestException;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.request.HttpRequest;
 import codesquad.was.response.HttpResponse;
+import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
 import codesquad.was.user.User;
 import codesquad.was.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static codesquad.was.session.Session.sessionStr;
 
 public class LoginHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(LoginHandler.class);
@@ -37,12 +40,14 @@ public class LoginHandler implements Handler {
             return response;
         }
 
-        String sessionId = Session.createSession();
-        Session.putSession(sessionId, user);
+        Session session = new Session();
+        String sessionId = Session.createSessionId();
+        session.setAttribute("user",user);
+        Manager.addSession(sessionId,session);
 
         //성공 시 main 으로
         HttpResponse.setRedirect(response, HttpStatusCode.FOUND, "/index.html");
-        HttpCookie sessionCookie = new HttpCookie("sessionId", sessionId);
+        HttpCookie sessionCookie = new HttpCookie(sessionStr, sessionId);
         sessionCookie.setMaxAge(sessionLong);
         response.addCookie(sessionCookie);
         return response;

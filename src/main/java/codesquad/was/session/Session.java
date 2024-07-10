@@ -4,21 +4,21 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Session {
-    public static final ConcurrentHashMap<String, Object> sessions = new ConcurrentHashMap<>();
+    public static final String sessionStr = "sessionId";
 
-    private Session() {}
+    public final ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<>();
 
-    public static Object get(String key) {
-        return sessions.get(key);
+    public Session() {}
+
+    public Object getAttribute(String key) {
+        return attributes.get(key);
     }
 
-    public static void putSession(String sessionId, Object value) {
-        sessions.put(sessionId, value);
+    public void setAttribute(String key, Object value) {
+        attributes.put(key, value);
     }
 
-    public static String createSession() {
-        String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new ConcurrentHashMap<>());
-        return sessionId;
+    public static String createSessionId() {
+        return UUID.randomUUID().toString();
     }
 }

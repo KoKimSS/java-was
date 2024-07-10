@@ -3,14 +3,17 @@ package codesquad.was.user;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.log.Log;
 import codesquad.was.repository.MemoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static codesquad.was.repository.MemoryRepository.*;
 
 public class UserRepository {
+    private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     public void save(User user) {
         if(user.getUserId().isBlank()){
-            Log.log("유저아이디는 필수 값 입니다.");
+            logger.debug("유저아이디는 필수 값 입니다.");
             return;
         }
         if(!isExistUser(user.getUserId())){
@@ -18,7 +21,7 @@ public class UserRepository {
             put("User"+user.getUserId(),user);
             return;
         }
-        Log.log("이미 저장 된 유저입니다");
+        logger.debug("이미 저장 된 유저입니다");
     }
 
     public User getUserByIdAndPw(String userId,String password) throws BadRequestException {
@@ -37,7 +40,6 @@ public class UserRepository {
     }
 
     public User get(String userId) throws BadRequestException {
-        System.out.println("유저아이디"+userId);
         Object o = MemoryRepository.get("User" + userId);
         return (User) o;
     }

@@ -43,7 +43,6 @@ public class WebServer {
             return;
         }
 
-        Log.log(request.toString());
 
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
@@ -53,7 +52,6 @@ public class WebServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.log(response.toString());
 
         // outPutStream 에 HttpResponse 추가 !
         HttpResponseSender.sendHttpResponse(clientOutput, response);

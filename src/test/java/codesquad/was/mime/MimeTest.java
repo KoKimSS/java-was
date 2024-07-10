@@ -59,6 +59,5 @@ public class MimeTest {
     @Test
     public void createSession() {
         String sessionId = UUID.randomUUID().toString();
-        System.out.println(sessionId);
     }
 }

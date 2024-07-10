@@ -3,6 +3,8 @@ package codesquad.was.server;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.log.Log;
 import codesquad.was.webServer.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,10 +16,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
 
+    private static final Logger logger = LoggerFactory.getLogger(Server.class);
     private final int port;
     private final WebServer webServer = new WebServer();
     private final ExecutorService executorService;
     private final ServerSocket serverSocket;
+
 
     public Server(int threadPoolSize, int port, int backlog) throws IOException {
         this.port = port;
@@ -29,7 +33,7 @@ public class Server {
 
     public void run() throws IOException {
 
-        Log.log("Server started on port " + port);
+        logger.info("Server started on port {}", port);
 
         while (true) {
             // Queue 연결 하기 전 (   Queue 50

@@ -2,6 +2,7 @@ package codesquad.was.request;
 
 import codesquad.was.common.HttpHeaders;
 import codesquad.was.common.HttpMethod;
+import codesquad.was.session.Session;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -13,11 +14,12 @@ public class HttpRequest {
     private HttpMethod method;
     private String urlPath;
     private String version;
-    // Headers 클래스를 만들지 ,,?
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, String> parameters;
     private String contentType;
     private String body;
+    private final Map<String, String> cookies = new HashMap<>();
+    private Session session;
 
     public HttpRequest() {
         parameters = new HashMap<>();
@@ -84,7 +86,7 @@ public class HttpRequest {
 
     // Parse parameters from URL
     public void parseParameters(String query) {
-        if(query == null || query.isEmpty()) {
+        if (query == null || query.isEmpty()) {
             return;
         }
 
@@ -102,16 +104,40 @@ public class HttpRequest {
     @Override
     public String toString() {
         return "HttpRequest{" +
-                "method='" + method + '\'' +
-                ", url='" + url + '\'' +
+                "url=" + url +
+                ", method=" + method +
+                ", urlPath='" + urlPath + '\'' +
                 ", version='" + version + '\'' +
                 ", headers=" + headers +
                 ", parameters=" + parameters +
+                ", contentType='" + contentType + '\'' +
                 ", body='" + body + '\'' +
+                ", cookies=" + cookies +
+                ", session=" + session +
                 '}';
     }
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public void addCookie(String key, String value) {
+        cookies.put(key, value);
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public void addSession(Session session) {
+        this.session = session;
     }
 }

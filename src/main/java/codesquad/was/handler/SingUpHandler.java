@@ -10,6 +10,7 @@ import codesquad.was.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class SingUpHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(SingUpHandler.class);
     private final UserRepository userRepository;

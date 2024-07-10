@@ -42,7 +42,6 @@ public class ResourceGetter {
      * @return 파일의 바이트 배열
      */
     public static byte[] getResourceBytesByPath(String filePath) throws IOException, NotFoundException {
-        System.out.println("파일패스"+filePath);
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
         if(resourceAsStream == null) {
             throw new NotFoundException("매핑되는 url이 없습니다");
