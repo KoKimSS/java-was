@@ -2,7 +2,7 @@ package codesquad.was.exception;
 
 import codesquad.was.common.HttpStatusCode;
 
-public class CommonException extends Exception{
+public class CommonException extends RuntimeException{
     private HttpStatusCode httpStatusCode;
     private String message;
 

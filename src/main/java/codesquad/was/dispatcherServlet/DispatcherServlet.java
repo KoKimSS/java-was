@@ -18,24 +18,15 @@ public class DispatcherServlet {
     public HttpResponse callHandler(HttpRequest request) throws IOException{
         Handler handler = HandlerMap.getHandler(request.getUrlPath());
 
-        try {
-            if (handler == null) {
-                return staticResponse(request);
-            }
-            HttpResponse response = handler.doBusinessByMethod(request);
-            if(response == null) {
-                try {
-                    return staticResponse(request);
-                } catch (Exception e) {
-                    throw new MethodNotAllowedException();
-                }
-            }
+        // url 과 매핑이 안되면
+        if (handler == null) {
+            return staticResponse(request);
+        }
 
-            return response;
-        } catch (CommonException e) {
-            HttpResponse response = new HttpResponse();
-            response.setStatusCode(e.getHttpStatusCode());
-            return response;
+        try {
+            return handler.doBusinessByMethod(request);
+        } catch (CommonException e) { // method 와 매핑이 안되면
+            return staticResponse(request);
         }
     }
 
