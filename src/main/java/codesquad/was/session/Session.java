@@ -12,7 +12,7 @@ public class Session {
     public Session() {}
 
     public Object getAttribute(String key) {
-        return attributes.get(key);
+        return attributes.getOrDefault(key,null);
     }
 
     public void setAttribute(String key, Object value) {

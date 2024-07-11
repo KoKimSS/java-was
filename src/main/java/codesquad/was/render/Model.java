@@ -3,7 +3,7 @@ package codesquad.was.render;
 import java.util.HashMap;
 import java.util.Map;
 
-class Model {
+public class Model {
     private final Map<String, String> data;
 
     public Model() {
