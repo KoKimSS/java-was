@@ -2,7 +2,7 @@ package codesquad.was.webServer;
 
 import codesquad.was.common.HttpStatusCode;
 import codesquad.was.dispatcherServlet.DispatcherServlet;
-import codesquad.was.log.Log;
+import codesquad.was.exception.CommonException;
 import codesquad.was.request.HttpRequest;
 import codesquad.was.request.HttpRequestParser;
 import codesquad.was.response.HttpResponse;
@@ -46,11 +46,13 @@ public class WebServer {
 
 
         // 비즈니스 로직 수행 후 HttpResponse 생성
-        HttpResponse response = null;
+        HttpResponse response = new HttpResponse();
         try {
             response = dispatcherServlet.callHandler(request);
-        } catch (Exception e) {
+        } catch (CommonException e) {
             e.printStackTrace();
+            response.setStatusCode(e.getHttpStatusCode());
+            response.setStatusMessage(e.getMessage());
         }
 
         // outPutStream 에 HttpResponse 추가 !
