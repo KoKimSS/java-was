@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Session {
     public static final String sessionStr = "sessionId";
+    public static final String userStr = "user";
 
     public final ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<>();
 
@@ -21,4 +22,5 @@ public class Session {
     public static String createSessionId() {
         return UUID.randomUUID().toString();
     }
+
 }

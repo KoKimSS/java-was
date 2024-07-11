@@ -11,10 +11,18 @@ import java.io.IOException;
 
 public interface Handler {
 
-    HttpResponse handlePOSTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException, BadRequestException;
-    HttpResponse handleGETRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException;
-    HttpResponse handlePUTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException;
-    HttpResponse handleDELETERequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException;
+    default HttpResponse handlePOSTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException, BadRequestException{
+        throw new MethodNotAllowedException();
+    };
+    default HttpResponse handleGETRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException{
+        throw new MethodNotAllowedException();
+    };
+    default HttpResponse handlePUTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException{
+        throw new MethodNotAllowedException();
+    };
+    default HttpResponse handleDELETERequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException{
+        throw new MethodNotAllowedException();
+    };
 
      default HttpResponse doBusinessByMethod(HttpRequest request) throws MethodNotAllowedException, InternalServerException, BadRequestException, IOException {
         return switch (request.getMethod()) {
