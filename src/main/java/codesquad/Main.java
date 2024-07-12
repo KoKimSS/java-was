@@ -1,6 +1,5 @@
 package codesquad;
 
-import codesquad.was.repository.UserRepository;
 import codesquad.was.server.Server;
 import codesquad.was.user.User;
 
