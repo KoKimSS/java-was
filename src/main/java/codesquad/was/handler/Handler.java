@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public interface Handler {
 
-    default HttpResponse handlePOSTRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException, BadRequestException{
+    default HttpResponse handlePOSTRequest(HttpRequest request) throws IOException, MethodNotAllowedException, BadRequestException{
         throw new MethodNotAllowedException();
     };
     default HttpResponse handleGETRequest(HttpRequest request) throws InternalServerException, IOException, MethodNotAllowedException, NotFoundException {

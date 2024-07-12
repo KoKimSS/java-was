@@ -49,7 +49,6 @@ public class HttpRequestParser {
                 if (headerParts[0].equalsIgnoreCase("Cookie")) {
                     parseCookies(headerParts[1], request);
                 }
-
             }
         }
 

@@ -53,6 +53,10 @@ public class WebServer {
             e.printStackTrace();
             response.setStatusCode(e.getHttpStatusCode());
             response.setStatusMessage(e.getMessage());
+        }  catch (Exception e) {
+            e.printStackTrace();
+            response.setStatusCode(HttpStatusCode.INTERNAL_SERVER_ERROR);
+            response.setStatusMessage(e.getMessage());
         }
 
         // outPutStream 에 HttpResponse 추가 !
