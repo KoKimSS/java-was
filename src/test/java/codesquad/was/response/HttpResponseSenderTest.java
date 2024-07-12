@@ -72,7 +72,7 @@ class HttpResponseSenderTest {
         String headers = new String(allValues.get(1), StandardCharsets.UTF_8);
 
         assertEquals("HTTP/1.1 204\r\n", statusLine);
-        assertEquals("Content-Type: text/plain\r\nContent-Length: 0\r\n\r\n", headers);
+        assertEquals("Content-Type: text/html\r\nContent-Length: 0\r\n\r\n", headers);
     }
 
     @Test

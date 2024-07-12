@@ -48,7 +48,7 @@ class HttpRequestTest {
                 ", body='{\"key\":\"value\"}'" +
                 '}';
 
-        String httpRequestString = "HttpRequest{url=http://example.com/page?name=value, method=POST, urlPath='/page', version='HTTP/1.1', headers={Content-Type=[application/json]}, parameters={name=value}, contentType='null', body='{\"key\":\"value\"}', cookies={}, session=null}";
+        String httpRequestString = "HttpRequest{url=http://example.com/page?name=value, method=POST, urlPath='/page', version='HTTP/1.1', headers={Content-Type=[application/json]}, parameters={name=value}, contentType='null', body='{\"key\":\"value\"}', cookies={}, session=}";
 
         assertEquals(httpRequestString, request.toString());
     }
