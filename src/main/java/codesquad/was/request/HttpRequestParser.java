@@ -3,6 +3,7 @@ package codesquad.was.request;
 
 import codesquad.was.log.Log;
 import codesquad.was.session.Manager;
+import codesquad.was.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,10 @@ public class HttpRequestParser {
                     String key = cookieParts[0];
                     String value = cookieParts[1];
                     if (key.equals(sessionStr)) {
-                        request.addSession(Manager.findSession(value));
+                        Session session = Manager.findSession(value);
+                        if (session != null) {
+                            request.addSession(session);
+                        }
                     }
                     request.addCookie(key, value);
                 });

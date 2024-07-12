@@ -24,6 +24,7 @@ public class HttpRequest {
 
     public HttpRequest() {
         parameters = new HashMap<>();
+        session = new Session();
     }
 
     // Getters and Setters
