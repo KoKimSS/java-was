@@ -2,6 +2,7 @@ package codesquad.was.util;
 
 
 import codesquad.was.exception.NotFoundException;
+import codesquad.was.mime.Mime;
 
 import java.io.*;
 
@@ -13,23 +14,23 @@ public class ResourceGetter {
      * @param filePath 파일 경로
      * @return MIME 타입 문자열
      */
-    public static String getContentTypeByPath(String filePath) {
+    public static Mime getContentTypeByPath(String filePath) {
         if (filePath.endsWith(".html")) {
-            return "text/html";
+            return Mime.TEXT_HTML;
         } else if (filePath.endsWith(".css")) {
-            return "text/css";
+            return Mime.TEXT_CSS;
         } else if (filePath.endsWith(".js")) {
-            return "application/javascript";
+            return Mime.APPLICATION_JAVASCRIPT;
         } else if (filePath.endsWith(".jpg")) {
-            return "image/jpeg";
+            return Mime.IMAGE_JPEG;
         } else if (filePath.endsWith(".png")) {
-            return "image/png";
+            return Mime.IMAGE_PNG;
         } else if (filePath.endsWith(".svg")) {
-            return "image/svg+xml";
+            return Mime.IMAGE_SVG;
         } else if (filePath.endsWith(".ico")) {
-            return "image/x-icon";
+            return Mime.IMAGE_ICO;
         } else {
-            return "application/octet-stream"; // 기타 파일 형식의 기본 타입
+            return Mime.APPLICATION_OCTET_STREAM;
         }
     }
 
@@ -42,7 +43,6 @@ public class ResourceGetter {
      * @return 파일의 바이트 배열
      */
     public static byte[] getResourceBytesByPath(String filePath) throws IOException, NotFoundException {
-        System.out.println("파일패스"+filePath);
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
         if(resourceAsStream == null) {
             throw new NotFoundException("매핑되는 url이 없습니다");

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../reset.css" rel="stylesheet" />
+    <link href="../global.css" rel="stylesheet" />
+    <link href="../main.css" rel="stylesheet" />
+    <link href="../user-list.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <a href="/main"><img src="../img/signiture.svg" /></a>
+        <ul class="header__menu">
+          {{authButton}}
+        </ul>
+      </header>
+      <h1>User Profiles</h1>
+      <div class="user-list">
+        [$<div class="user-card">
+          <div class="user-header">
+            <div class="user-avatar">
+            </div>
+          </div>
+          <div class="user-info">
+            <div class="user-name"> {{users.username}}</div>
+          </div>
+        </div> $]
+      </div>
+    </div>
+  </body>
+</html>
