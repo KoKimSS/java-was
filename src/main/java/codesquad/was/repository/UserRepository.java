@@ -1,8 +1,6 @@
 package codesquad.was.repository;
 
 import codesquad.was.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +21,14 @@ public class UserRepository implements Repository<String,User>{
         return map.containsKey(key);
     }
 
+    public List<Object> getAllObject() {
+        return new ArrayList<>(map.values());
+    }
+
     public List<User> getAll() {
         return new ArrayList<>(map.values());
     }
+
 
     @Override
     public User findById(String key) {

@@ -9,7 +9,6 @@ import codesquad.was.request.HttpRequest;
 import codesquad.was.response.HttpResponse;
 import codesquad.was.session.Session;
 import codesquad.was.user.User;
-import codesquad.was.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +34,10 @@ public class UserListHandler implements Handler{
             HttpResponse.setRedirect(response, HttpStatusCode.FOUND,"/login");
             return response;
         }
-        List<User> userList = userRepository.getAll();
+        List<Object> userList = userRepository.getAllObject();
         Model model = new Model();
-        StringBuilder sb = new StringBuilder();
-        userList.forEach((u)->sb.append(u.getUsername()).append(" "));
-        log.debug(sb.toString());
-        model.addAttribute("userList", sb.toString());
-        model.addAttribute("userName", ((User) session.getAttribute(userStr)).getUsername());
+        model.addListData("users", userList);
+        model.addSingleData("userName", ((User) session.getAttribute(userStr)).getUsername());
 
         byte[] htmlBytes = getResourceBytesByPath("/static/userList/index.html");
 

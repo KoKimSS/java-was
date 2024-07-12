@@ -11,8 +11,8 @@ public class HtmlTemplateRenderTest {
     public void testRender_withValidPlaceholders() {
         String htmlTemplate = "<html><body><h1>{{title}}</h1><p>{{message}}</p></body></html>";
         Model model = new Model();
-        model.addAttribute("title", "Hello, World!");
-        model.addAttribute("message", "This is a dynamic message.");
+        model.addSingleData("title", "Hello, World!");
+        model.addSingleData("message", "This is a dynamic message.");
 
         String expectedHtml = "<html><body><h1>Hello, World!</h1><p>This is a dynamic message.</p></body></html>";
         String renderedHtml = HtmlTemplateRender.render(htmlTemplate, model);
@@ -24,8 +24,8 @@ public class HtmlTemplateRenderTest {
     public void testRender_withMissingPlaceholders() {
         String htmlTemplate = "<html><body><h1>{{title}}</h1><p>{{message}}</p><footer>{{footer}}</footer></body></html>";
         Model model = new Model();
-        model.addAttribute("title", "Hello, World!");
-        model.addAttribute("message", "This is a dynamic message.");
+        model.addSingleData("title", "Hello, World!");
+        model.addSingleData("message", "This is a dynamic message.");
 
         String expectedHtml = "<html><body><h1>Hello, World!</h1><p>This is a dynamic message.</p><footer>{{footer}}</footer></body></html>";
         String renderedHtml = HtmlTemplateRender.render(htmlTemplate, model);

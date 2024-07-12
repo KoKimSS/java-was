@@ -1,15 +1,18 @@
 package codesquad.was.render;
 
+import codesquad.was.user.User;
+
 import java.util.Map;
 
 public class HtmlTemplateRender {
     public static final String authButtonHolder = "{{authButton}}";
+    private static ListRender listRender = new ListRender();
+    private static SingleRender singleRender = new SingleRender();
+
     public static String render(String html, Model model) {
         html = authButtonRender(html, model);
-        for (Map.Entry<String, String> entry : model.getData().entrySet()) {
-            String placeholder = "{{" + entry.getKey() + "}}";
-            html = html.replace(placeholder, entry.getValue());
-        }
+        html = listRender.render(html, model);
+        html = singleRender.render(html, model);
         return html;
     }
 
@@ -25,8 +28,10 @@ public class HtmlTemplateRender {
           </li>
         """;
 
+
+        //todo
         // 로그인이 되어 있다면
-        String userName = model.getData().get("userName");
+        String userName = (String) model.getSingleData().get("userName");
 
         if(userName !=null){
             authButton = """
