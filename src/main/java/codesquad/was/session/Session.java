@@ -23,4 +23,12 @@ public class Session {
         return UUID.randomUUID().toString();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        attributes.forEach((key, value) -> builder
+                .append("key: ").append(key)
+                .append("value: ").append(value));
+        return builder.toString();
+    }
 }
