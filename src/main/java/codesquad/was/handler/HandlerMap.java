@@ -6,6 +6,7 @@ public class HandlerMap {
     private final static ConcurrentHashMap<String, Handler> handlerMap = new ConcurrentHashMap<>() {{
         put("/create", SingUpHandler.singUpHandler);
         put("/login", LoginHandler.loginHandler);
+        put("/logout", LogoutHandler.logoutHandler);
         put("/user/list",UserListHandler.userListHandler);
     }};
 
