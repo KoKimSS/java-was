@@ -6,6 +6,10 @@ public enum Mime {
     // 기본적인 MIME 타입들 정의
     TEXT_PLAIN("text/plain"),
     TEXT_HTML("text/html"),
+    TEXT_XML("text/xml"),
+    TEXT_JAVASCRIPT("text/javascript"),
+    TEXT_CSS("text/css"),
+    TEXT_HTML5("text/html5"),
     APPLICATION_JSON("application/json"),
     APPLICATION_XML("application/xml"),
     IMAGE_PNG("image/png"),

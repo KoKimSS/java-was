@@ -3,6 +3,7 @@ package codesquad.was.response;
 import codesquad.was.common.HttpCookie;
 import codesquad.was.common.HttpStatusCode;
 import codesquad.was.common.HttpHeaders;
+import codesquad.was.mime.Mime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
 public class HttpResponse {
     private HttpStatusCode statusCode;
     private String statusMessage;
-    private String contentType;
+    private Mime contentType;
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, HttpCookie> cookies = new HashMap<>();
 
@@ -60,11 +61,11 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public String getContentType() {
+    public Mime getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(Mime contentType) {
         this.contentType = contentType;
     }
 

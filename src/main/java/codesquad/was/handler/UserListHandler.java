@@ -44,7 +44,7 @@ public class UserListHandler implements Handler{
         String renderedHtml = HtmlTemplateRender.render(new String(htmlBytes,StandardCharsets.UTF_8), model);
         log.debug(renderedHtml);
         response.setStatusCode(HttpStatusCode.OK);
-        response.setContentType(Mime.TEXT_HTML.getMimeType());
+        response.setContentType(Mime.TEXT_HTML);
         response.setBody(renderedHtml.getBytes(StandardCharsets.UTF_8));
 
 
