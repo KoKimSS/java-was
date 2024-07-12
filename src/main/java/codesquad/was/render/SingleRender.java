@@ -47,8 +47,13 @@ public class SingleRender implements Render {
                 }
             }else if (parts.length == 1){
                 String objectName = parts[0].trim();
+
                 Object obj = model.getSingleData(objectName);
-                resultHtml.append(obj.toString());
+                if (obj != null) {
+                    resultHtml.append(obj.toString());
+                }else {
+                    resultHtml.append(matcher.group(0));
+                }
 
             } else {
                 resultHtml.append(matcher.group(0)); // Append the original {{ object.value }} if no replacement

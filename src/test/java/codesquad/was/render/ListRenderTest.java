@@ -30,7 +30,7 @@ class ListRenderTest {
         String result = listRender.render(html, model);
 
         // Print the result
-        System.out.println(result);
+        System.out.println("렌더링 후 "+result);
     }
 
     // A simple object class to use in the test

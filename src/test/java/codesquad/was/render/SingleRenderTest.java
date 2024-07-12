@@ -26,7 +26,7 @@ class SingleRenderTest {
 
         // Render the HTML with the model data
         String result = singleRender.render(html, model);
-
+        System.out.println(result);
         // Print the result
         Assertions.assertThat("<div>TestValue</div>").isEqualTo(result);
     }
