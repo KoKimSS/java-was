@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class HttpRequestParser {
 
 
     private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
-        // Parse body (if any)
+//         Parse body (if any)
         String contentType = null;
         List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
         if (contentTypeList != null) {
@@ -94,14 +95,46 @@ public class HttpRequestParser {
             body.append((char) reader.read());
         }
 
+        logger.info("리퀘스트 바디{}", body.toString());
+
+        String bodyStr = URLDecoder.decode(body.toString(), "UTF-8");
+
         if ("application/x-www-form-urlencoded".equals(contentType)) {
-            request.parseParameters(body.toString());
+
+            request.parseParameters(bodyStr);
             return;
         }
 
         if (contentType == null || contentType.isEmpty()) {
-            request.setBody(body.toString());
+            request.setBody(bodyStr);
         }
-        logger.info(body.toString());
+//
+//        // Parse body (if any)
+//        String contentType = null;
+//        List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
+//        if (contentTypeList != null) {
+//            contentType = contentTypeList.get(0);
+//            request.setContentType(contentType);
+//        }
+//        StringBuilder body = new StringBuilder();
+//
+//        // UTF-8로 디코딩하며 본문 읽기
+//        char[] buffer = new char[1024];
+//        int numCharsRead;
+//        while ((numCharsRead = reader.read(buffer)) != -1) {
+//            body.append(buffer, 0, numCharsRead);
+//        }
+//
+//        String bodyString = body.toString();
+//
+//        if ("application/x-www-form-urlencoded".equals(contentType)) {
+//            request.parseParameters(bodyString);
+//            return;
+//        }
+//
+//        if (contentType == null || contentType.isEmpty()) {
+//            request.setBody(bodyString);
+//        }
+//        logger.info(bodyString);
     }
 }
