@@ -1,9 +1,5 @@
 package codesquad.was.render;
 
-import codesquad.was.user.User;
-
-import java.util.Map;
-
 public class HtmlTemplateRender {
     public static final String authButtonHolder = "{{authButton}}";
     private static ListRender listRender = new ListRender();
@@ -28,11 +24,7 @@ public class HtmlTemplateRender {
           </li>
         """;
 
-
-        //todo
-        // 로그인이 되어 있다면
         String userName = (String) model.getSingleData().get("userName");
-
         if(userName !=null){
             authButton = """
             <li class="header__menu__item">

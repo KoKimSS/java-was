@@ -1,17 +1,13 @@
-package codesquad.was.response;
+package codesquad.was.http.response;
 
-import codesquad.was.common.HttpCookie;
-import codesquad.was.log.Log;
+import codesquad.was.http.common.HttpCookie;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 
 public class HttpResponseSender {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpResponseSender.class);

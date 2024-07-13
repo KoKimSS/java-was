@@ -1,9 +1,9 @@
-package codesquad.was.response;
+package codesquad.was.http.response;
 
-import codesquad.was.common.HttpCookie;
-import codesquad.was.common.HttpStatusCode;
-import codesquad.was.common.HttpHeaders;
-import codesquad.was.mime.Mime;
+import codesquad.was.http.common.HttpCookie;
+import codesquad.was.http.common.HttpStatusCode;
+import codesquad.was.http.common.HttpHeaders;
+import codesquad.was.http.common.Mime;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,7 @@
 package codesquad.was.mime;
 
 
+import codesquad.was.http.common.Mime;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

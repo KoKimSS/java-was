@@ -1,10 +1,11 @@
-package codesquad.was.user;
+package codesquad.business.service;
 
+import codesquad.business.domain.User;
 import codesquad.was.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static codesquad.was.repository.UserRepository.*;
+import static codesquad.business.repository.UserRepository.*;
 
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);

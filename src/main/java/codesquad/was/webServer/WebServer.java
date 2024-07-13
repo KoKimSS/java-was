@@ -1,12 +1,12 @@
 package codesquad.was.webServer;
 
-import codesquad.was.common.HttpStatusCode;
+import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.dispatcherServlet.DispatcherServlet;
 import codesquad.was.exception.CommonException;
-import codesquad.was.request.HttpRequest;
-import codesquad.was.request.HttpRequestParser;
-import codesquad.was.response.HttpResponse;
-import codesquad.was.response.HttpResponseSender;
+import codesquad.was.http.request.HttpRequest;
+import codesquad.was.http.request.HttpRequestParser;
+import codesquad.was.http.response.HttpResponse;
+import codesquad.was.http.response.HttpResponseSender;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,14 +43,13 @@ public class WebServer {
             return;
         }
 
-
-
-        // 비즈니스 로직 수행 후 HttpResponse 생성
-        HttpResponse response = new HttpResponse();
+        HttpResponse response = null;
         try {
+            // 비즈니스 로직 수행 후 HttpResponse 생성
             response = dispatcherServlet.callHandler(request);
         } catch (CommonException e) {
             e.printStackTrace();
+            response = new HttpResponse();
             response.setStatusCode(e.getHttpStatusCode());
             response.setStatusMessage(e.getMessage());
         }

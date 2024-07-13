@@ -5,25 +5,21 @@ import java.util.Map;
 import java.util.Optional;
 
 public class UrlPathResourceMap {
-    private static final Map<String, String> resourcePathMap = new HashMap<String, String>() {{
-        // 간단한 예제 URL 패턴과 리소스 매핑 설정
-        put("/", "/static/index.html");
-        put("/index.html", "/static/index.html");
-        put("/login", "/static/login/index.html");
-        put("/user/login_failed.html", "/static/login/index.html");
-        put("/about", "about.html");
-        put("/contact", "contact.html");
-        put("/css/styles.css", "styles.css");
-        put("/js/main.js", "main.js");
-        put("/registration", "/static/registration/index.html");
-    }};
+    private static final Map<String, String> resourcePathMap = new HashMap<String, String>();
 
     private UrlPathResourceMap() {
     }
 
+    public static UrlPathResourceMap factoryMethod() {
+        return new UrlPathResourceMap();
+    }
+
+    public void setResourcePathMap(String path,String resourcePath) {
+        resourcePathMap.put(path, resourcePath);
+    }
+
     /**
      * 주어진 URL에 해당하는 리소스 경로를 반환합니다.
-     *
      * @param uri 요청된 URL
      * @return URL에 해당하는 리소스 경로
      */

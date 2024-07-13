@@ -1,7 +1,7 @@
-package codesquad.was.request;
+package codesquad.was.http.request;
 
-import codesquad.was.common.HttpHeaders;
-import codesquad.was.common.HttpMethod;
+import codesquad.was.http.common.HttpHeaders;
+import codesquad.was.http.common.HttpMethod;
 import codesquad.was.session.Session;
 
 import java.net.URL;

@@ -1,4 +1,4 @@
-package codesquad.was.user;
+package codesquad.business.domain;
 
 import java.util.Objects;
 
