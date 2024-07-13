@@ -5,8 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ListRender implements Render {
-    public static String start = "\\[\\$";
-    public static String end = "\\$\\]";
+    public static final String start = "\\[\\$";
+    public static final String end = "\\$\\]";
 
 
     /**
@@ -28,14 +28,8 @@ public class ListRender implements Render {
         int lastMatchEnd = 0;
         while (matcher.find()) {
             resultHtml.append(html, lastMatchEnd, matcher.start());
-            html.substring(matcher.start(),matcher.end());
 
             String repeatBlock = matcher.group(1);
-
-
-            System.out.println("리핏 블록 있음"+repeatBlock);
-
-
             // repeatBlock안에 {{ object. value}}가 있는지 찾고
             String attribute = extractAttribute(repeatBlock);
             if(attribute == null) {
@@ -53,23 +47,16 @@ public class ListRender implements Render {
             // 있으면 List<Object> objects 에서 하나씩 꺼내서 getValue를 {{object.value }} 안에 넣어줘라
             SingleRender singleRender = new SingleRender();
             for(Object o : listData) {
-                System.out.println("리스트 렌더안의 싱글 렌더 실행");
                 Model singleModel = new Model();
-                System.out.println(o.getClass().getSimpleName());
                 singleModel.addSingleData(object,o);
                 String singleRenderBlock = singleRender.render(repeatBlock, singleModel);
-                System.out.println(singleRenderBlock);
                 resultHtml.append(singleRenderBlock);
             }
-            System.out.println("렌더링 중"+resultHtml.toString());
-
             lastMatchEnd = matcher.end();
         }
 
         resultHtml.append(html, lastMatchEnd, html.length());
 
-        System.out.println("렌더링 완료");
-        System.out.println("렌더링 중"+resultHtml.toString());
         return resultHtml.toString();
     }
 

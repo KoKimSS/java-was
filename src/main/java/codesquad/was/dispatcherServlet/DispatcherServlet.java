@@ -1,16 +1,17 @@
 package codesquad.was.dispatcherServlet;
 
 import codesquad.was.exception.CommonException;
+import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.exception.NotFoundException;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
 import codesquad.was.render.HtmlTemplateRender;
 import codesquad.was.render.Model;
-import codesquad.was.request.HttpRequest;
-import codesquad.was.common.HttpStatusCode;
-import codesquad.was.response.HttpResponse;
+import codesquad.was.http.request.HttpRequest;
+import codesquad.was.http.common.HttpStatusCode;
+import codesquad.was.http.response.HttpResponse;
 import codesquad.was.session.Session;
-import codesquad.was.user.User;
+import codesquad.business.domain.User;
 import codesquad.was.util.ResourceGetter;
 import codesquad.was.util.UrlPathResourceMap;
 
@@ -18,9 +19,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class DispatcherServlet {
+    private final HandlerMap handlerMap = HandlerMap.factoryMethod();
 
     public HttpResponse callHandler(HttpRequest request) throws IOException{
-        Handler handler = HandlerMap.getHandler(request.getUrlPath());
+        Handler handler = handlerMap.getHandler(request.getUrlPath());
 
         // url 과 매핑이 안되면
         if (handler == null) {
@@ -29,7 +31,7 @@ public class DispatcherServlet {
 
         try {
             return handler.doBusinessByMethod(request);
-        } catch (CommonException e) { // method 와 매핑이 안되면
+        } catch (MethodNotAllowedException e) { // method 와 매핑이 안되면
             return staticResponse(request);
         }
     }

@@ -1,7 +1,9 @@
 package codesquad.was.response;
 
-import codesquad.was.common.HttpCookie;
-import codesquad.was.mime.Mime;
+import codesquad.was.http.common.HttpCookie;
+import codesquad.was.http.response.HttpResponse;
+import codesquad.was.http.response.HttpResponseSender;
+import codesquad.was.http.common.Mime;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.ByteArrayOutputStream;
@@ -9,15 +11,13 @@ import java.io.OutputStream;
 
 import static org.assertj.core.api.Assertions.*;
 
-import codesquad.was.common.HttpStatusCode;
+import codesquad.was.http.common.HttpStatusCode;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

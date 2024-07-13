@@ -1,11 +1,12 @@
 package codesquad.was.user;
 
+import codesquad.business.domain.User;
+import codesquad.business.service.UserService;
 import codesquad.was.exception.BadRequestException;
-import codesquad.was.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static codesquad.was.repository.UserRepository.*;
+import static codesquad.business.repository.UserRepository.*;
 
 
 class UserServiceTest {

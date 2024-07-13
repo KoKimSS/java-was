@@ -1,7 +1,6 @@
-package codesquad.was.request;
+package codesquad.was.http.request;
 
 
-import codesquad.was.log.Log;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
 import org.slf4j.Logger;

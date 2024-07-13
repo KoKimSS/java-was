@@ -1,4 +1,4 @@
-package codesquad.was.common;
+package codesquad.was.http.common;
 public enum HttpStatusCode {
     OK(200, "OK"),
     CREATED(201, "Created"),

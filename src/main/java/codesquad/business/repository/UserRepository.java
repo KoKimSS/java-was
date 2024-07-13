@@ -1,17 +1,15 @@
-package codesquad.was.repository;
+package codesquad.business.repository;
 
-import codesquad.was.user.User;
+import codesquad.business.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class UserRepository implements Repository<String,User>{
+public class UserRepository implements Repository<String,User> {
     private static final ConcurrentHashMap<String, User> map = new ConcurrentHashMap<>();
     public static final UserRepository userRepository = new UserRepository();
-
     private UserRepository() {}
-
 
     public int getSize() {
         return map.size();
