@@ -1,6 +1,9 @@
 package codesquad.business.controller;
 
+import codesquad.business.domain.Article;
 import codesquad.business.domain.User;
+import codesquad.business.service.ArticleService;
+import codesquad.was.exception.BadRequestException;
 import codesquad.was.handler.Handler;
 import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.http.common.Mime;
@@ -12,11 +15,14 @@ import codesquad.was.session.Session;
 
 import java.nio.charset.StandardCharsets;
 
+import static codesquad.business.domain.Article.*;
 import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
 
 public class ArticleHandler implements Handler {
 
     public static ArticleHandler articleHandler = new ArticleHandler();
+    private final ArticleService articleService = new ArticleService();
+
 
     @Override
     public HttpResponse handleGETRequest(HttpRequest request) {
@@ -42,6 +48,24 @@ public class ArticleHandler implements Handler {
 
     @Override
     public HttpResponse handlePOSTRequest(HttpRequest request) {
-        return Handler.super.handlePOSTRequest(request);
+        HttpResponse response = new HttpResponse();
+
+        String contents = request.getParameter("contents");
+        if(contents == null || contents.isEmpty()) {
+            throw new BadRequestException("content is empty");
+        }
+
+        User user = (User)request.getSession().getAttribute(Session.userStr);
+        if(user == null) {
+            HttpResponse.setRedirect(response, HttpStatusCode.FOUND,"/login");
+            return response;
+        }
+
+        Article article = FactoryMethod(contents, user.getUserId());
+        long articleId = articleService.saveArticle(article);
+        System.out.println("아티클 생성"+articleId);
+
+        HttpResponse.setRedirect(response, HttpStatusCode.FOUND, "/index.html");
+        return response;
     }
 }
