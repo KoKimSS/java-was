@@ -19,6 +19,7 @@ public enum Mime {
     IMAGE_ICO("image/x-icon"),
     APPLICATION_JAVASCRIPT("application/javascript"),
     APPLICATION_OCTET_STREAM("application/octet-stream"),
+    APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
     MULTIPART_FORM_DATA("multipart/form-data");
 
     private final String mimeType;
