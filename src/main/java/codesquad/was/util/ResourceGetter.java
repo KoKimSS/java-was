@@ -1,8 +1,9 @@
 package codesquad.was.util;
 
 
+import codesquad.was.exception.InternalServerException;
 import codesquad.was.exception.NotFoundException;
-import codesquad.was.mime.Mime;
+import codesquad.was.http.common.Mime;
 
 import java.io.*;
 
@@ -42,12 +43,18 @@ public class ResourceGetter {
      * @param filePath 파일 경로Ï
      * @return 파일의 바이트 배열
      */
-    public static byte[] getResourceBytesByPath(String filePath) throws IOException, NotFoundException {
+    public static byte[] getResourceBytesByPath(String filePath){
         InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
         if(resourceAsStream == null) {
             throw new NotFoundException("매핑되는 url이 없습니다");
         }
-        byte[] bytes = resourceAsStream.readAllBytes();
+        byte[] bytes;
+
+        try {
+            bytes = resourceAsStream.readAllBytes();
+        } catch (IOException e) {
+            throw new InternalServerException("리소스 읽을 때 IOException 발생");
+        }
 
         if(bytes == null) {
             throw new NotFoundException("매핑되는 url이 없습니다");

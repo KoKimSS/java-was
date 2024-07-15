@@ -1,14 +1,15 @@
-package codesquad.was.handler;
+package codesquad.business.controller;
 
-import codesquad.was.common.HttpCookie;
-import codesquad.was.common.HttpStatusCode;
+import codesquad.was.http.common.HttpCookie;
+import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.exception.BadRequestException;
-import codesquad.was.request.HttpRequest;
-import codesquad.was.response.HttpResponse;
+import codesquad.was.handler.Handler;
+import codesquad.was.http.request.HttpRequest;
+import codesquad.was.http.response.HttpResponse;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
-import codesquad.was.user.User;
-import codesquad.was.user.UserService;
+import codesquad.business.domain.User;
+import codesquad.business.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

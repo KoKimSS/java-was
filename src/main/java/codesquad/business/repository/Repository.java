@@ -1,4 +1,4 @@
-package codesquad.was.repository;
+package codesquad.business.repository;
 
 
 public interface Repository<K, V> {

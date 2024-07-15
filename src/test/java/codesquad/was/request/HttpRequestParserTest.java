@@ -1,6 +1,8 @@
 package codesquad.was.request;
 
-import codesquad.was.common.HttpMethod;
+import codesquad.was.http.common.HttpMethod;
+import codesquad.was.http.request.HttpRequest;
+import codesquad.was.http.request.HttpRequestParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

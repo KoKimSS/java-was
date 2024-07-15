@@ -1,7 +1,5 @@
 package codesquad.was.server;
 
-import codesquad.was.exception.InternalServerException;
-import codesquad.was.log.Log;
 import codesquad.was.webServer.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +24,6 @@ public class Server {
     public Server(int threadPoolSize, int port, int backlog) throws IOException {
         this.port = port;
         this.executorService = Executors.newFixedThreadPool(threadPoolSize);
-        //ThreadPoolExecutor -> 미리 쓰레드를 10개 생성해 놓을 수 있음
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
         this.serverSocket = new ServerSocket(port, backlog);
     }
 
@@ -48,16 +44,6 @@ public class Server {
                     throw new RuntimeException(e);
                 }
             });
-
-//            executorService.submit(() -> {
-//                try (Socket clientSocket = serverSocket.accept()) {
-//                    webServer.handleClientRequest(clientSocket);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (InternalServerException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
         }
     }
 

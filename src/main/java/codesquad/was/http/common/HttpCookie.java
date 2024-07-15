@@ -1,4 +1,4 @@
-package codesquad.was.common;
+package codesquad.was.http.common;
 
 public class HttpCookie {
     private String name;
