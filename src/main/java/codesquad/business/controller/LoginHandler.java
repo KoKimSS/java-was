@@ -18,7 +18,7 @@ import static codesquad.was.session.Session.sessionStr;
 
 public class LoginHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(LoginHandler.class);
-    private static int sessionLong = 30; //초
+    private static int sessionLong = 600; //초
     private final UserService userService;
 
     // 싱글톤 으로 구현
@@ -50,9 +50,7 @@ public class LoginHandler implements Handler {
         HttpCookie sessionCookie = new HttpCookie(sessionStr, sessionId);
         sessionCookie.setMaxAge(sessionLong);
 
-        HttpCookie cookie = new HttpCookie("cookie", "123456");
         response.addCookie(sessionCookie);
-        response.addCookie(cookie);
         return response;
     }
 
