@@ -13,6 +13,7 @@ public class handlerMapConfig {
         handlerMap.setHandlerMap("/user/list", UserListHandler.userListHandler);
         handlerMap.setHandlerMap("/article", ArticleHandler.articleHandler);
         handlerMap.setHandlerMap("/article/list", ArticleListHandler.articleListHandler);
+        handlerMap.setHandlerMap("/article/detail", ArticleDetailHandler.articleDetailHandler);
     }
 
     private handlerMapConfig() {}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../reset.css" rel="stylesheet">
+    <link href="../global.css" rel="stylesheet">
+    <title>게시글 상세</title>
+    <style>
+        .comments {
+            margin-top: 20px;
+        }
+        .comment {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .comment p {
+            margin: 5px 0;
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .comment-form button {
+            margin-top: 10px;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <a href="/"><img src="../img/signiture.svg" /></a>
+        <ul class="header__menu">
+            {{authButton}}
+        </ul>
+    </header>
+    <div class="page">
+        <h2 class="page-title post__title">게시글 상세</h2>
+        <div class="article">
+            <h1>{{article.title}}</h1>
+            <p>{{article.contents}}</p>
+            <p>작성자: {{article.userId}}</p>
+        </div>
+        <div class="comments">
+            <h3>댓글 목록</h3>
+            [$
+            <div class="comment">
+                <p>{{comment.userId}}</p>
+                <p>{{comment.contents}}</p>
+            </div>
+            $]
+        </div>
+        <div class="comment-form">
+            <h3>댓글 작성</h3>
+            <form action="/article/comment" method="post">
+                <textarea name="contents" placeholder="댓글을 입력하세요" required></textarea>
+                <input type="hidden" name="articleId" value="{{article.id}}">
+                <button type="submit">댓글 작성</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
