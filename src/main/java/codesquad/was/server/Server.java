@@ -1,5 +1,7 @@
 package codesquad.was.server;
 
+import codesquad.business.repository.JdbcTemplate;
+import codesquad.was.util.ConsoleColors;
 import codesquad.was.webServer.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,11 +9,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static codesquad.business.configuration.UrlPathResourceMapConfig.setUrlPathResourceMap;
 import static codesquad.business.configuration.handlerMapConfig.setHandlerMap;
+import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
 
 public class Server {
 
@@ -32,7 +37,8 @@ public class Server {
 
         setUrlPathResourceMap();
         setHandlerMap();
-
+        System.out.println(new String(getResourceBytesByPath("/banner.txt"), StandardCharsets.UTF_8));
+        System.out.println(ConsoleColors.GREEN + "  :: SeungSu WAS ::"+ConsoleColors.RESET+"                (v1.0.0)");
         logger.info("Server started on port {}", port);
 
         while (true) {
