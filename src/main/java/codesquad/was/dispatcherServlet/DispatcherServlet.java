@@ -1,6 +1,6 @@
 package codesquad.was.dispatcherServlet;
 
-import codesquad.business.domain.User;
+import codesquad.business.domain.Member;
 import codesquad.was.exception.MethodNotAllowedException;
 import codesquad.was.handler.Handler;
 import codesquad.was.handler.HandlerMap;
@@ -30,11 +30,11 @@ public class DispatcherServlet {
         byte[] htmlBytes = ResourceGetter.getResourceBytesByPath(resourcePath);
 
         Model model = new Model();
-        User user = (User) request.getSession().getAttribute(Session.userStr);
+        Member member = (Member) request.getSession().getAttribute(Session.userStr);
 
-        if (user != null) {
+        if (member != null) {
             System.out.println("로그인 된 요청");
-            model.addSingleData("userName", user.getUsername());
+            model.addSingleData("userName", member.getUsername());
         }
 
         String renderedHtml = HtmlTemplateRender.render(new String(htmlBytes, StandardCharsets.UTF_8), model);

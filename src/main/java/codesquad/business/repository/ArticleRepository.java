@@ -18,14 +18,10 @@ public class ArticleRepository implements Repository<Long, Article> {
     }
 
     @Override
-    public void save(Long key, Article value) {
-        map.put(key, value);
-    }
-
-    public long save(Article value) {
+    public Long save(Article article) {
         long andIncrement = idGenerator.getAndIncrement();
-        value.setId(andIncrement);
-        map.put(andIncrement, value);
+        article.setId(andIncrement);
+        map.put(andIncrement, article);
         return andIncrement;
     }
 

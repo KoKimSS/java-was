@@ -5,7 +5,13 @@ import codesquad.business.repository.ArticleRepository;
 
 public class ArticleService {
 
+    private final ArticleRepository articleRepository;
+
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
+
     public long saveArticle(Article article) {
-        return ArticleRepository.ARTICLE_REPOSITORY.save(article);
+        return articleRepository.save(article);
     }
 }

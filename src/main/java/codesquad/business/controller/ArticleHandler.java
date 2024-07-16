@@ -1,7 +1,8 @@
 package codesquad.business.controller;
 
 import codesquad.business.domain.Article;
-import codesquad.business.domain.User;
+import codesquad.business.domain.Member;
+import codesquad.business.repository.ArticleRepository;
 import codesquad.business.service.ArticleService;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.handler.Handler;
@@ -20,23 +21,27 @@ import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
 
 public class ArticleHandler implements Handler {
 
-    public static ArticleHandler articleHandler = new ArticleHandler();
-    private final ArticleService articleService = new ArticleService();
+    public static ArticleHandler articleHandler = new ArticleHandler(new ArticleService(ArticleRepository.ARTICLE_REPOSITORY));
 
+    private final ArticleService articleService;
+
+    public ArticleHandler(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @Override
     public HttpResponse handleGETRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
 
         Model model = new Model();
-        User user = (User)request.getSession().getAttribute(Session.userStr);
+        Member member = (Member)request.getSession().getAttribute(Session.userStr);
 
-        if(user == null) {
+        if(member == null) {
             HttpResponse.setRedirect(response, HttpStatusCode.FOUND,"/login");
             return response;
         }
 
-        model.addSingleData("userName",user.getUsername());
+        model.addSingleData("userName", member.getUsername());
         byte[] htmlBytes = getResourceBytesByPath("/static/article/index.html");
         response.setStatusCode(HttpStatusCode.OK);
         response.setContentType(Mime.TEXT_HTML);
@@ -55,13 +60,18 @@ public class ArticleHandler implements Handler {
             throw new BadRequestException("content is empty");
         }
 
-        User user = (User)request.getSession().getAttribute(Session.userStr);
-        if(user == null) {
+        String title = request.getParameter("title");
+        if(title == null || title.isEmpty()) {
+            throw new BadRequestException("content is empty");
+        }
+
+        Member member = (Member)request.getSession().getAttribute(Session.userStr);
+        if(member == null) {
             HttpResponse.setRedirect(response, HttpStatusCode.FOUND,"/login");
             return response;
         }
 
-        Article article = FactoryMethod(contents, user.getUserId());
+        Article article = FactoryMethod(title, contents, member.getId());
         long articleId = articleService.saveArticle(article);
         System.out.println("아티클 생성"+articleId);
 

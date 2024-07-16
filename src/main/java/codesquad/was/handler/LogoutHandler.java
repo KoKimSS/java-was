@@ -1,6 +1,6 @@
 package codesquad.was.handler;
 
-import codesquad.business.domain.User;
+import codesquad.business.domain.Member;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.http.common.HttpCookie;
 import codesquad.was.http.common.HttpStatusCode;
@@ -8,8 +8,6 @@ import codesquad.was.http.request.HttpRequest;
 import codesquad.was.http.response.HttpResponse;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
-
-import java.io.IOException;
 
 import static codesquad.was.session.Session.*;
 
@@ -21,8 +19,8 @@ public class LogoutHandler implements Handler{
         HttpResponse response = new HttpResponse();
         Session session = request.getSession();
 
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
+        Member member = (Member) session.getAttribute("user");
+        if (member == null) {
             throw new BadRequestException("You are not logged in");
         }
 
