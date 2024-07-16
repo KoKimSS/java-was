@@ -3,6 +3,7 @@ package codesquad.business.controller;
 import codesquad.business.domain.Article;
 import codesquad.business.domain.Comment;
 import codesquad.business.service.ArticleService;
+import codesquad.business.service.CommentService;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.handler.Handler;
 import codesquad.was.http.common.HttpStatusCode;
@@ -15,17 +16,19 @@ import codesquad.was.render.Render;
 import codesquad.was.util.ResourceGetter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static codesquad.was.render.HtmlTemplateRender.*;
 
 public class ArticleDetailHandler implements Handler {
     private final ArticleService articleService;
+    private final CommentService commentService;
+    public static final ArticleDetailHandler articleDetailHandler = new ArticleDetailHandler(ArticleService.articleService,CommentService.commentService);
 
-    public static final ArticleDetailHandler articleDetailHandler = new ArticleDetailHandler(ArticleService.articleService);
-
-    public ArticleDetailHandler(ArticleService articleService) {
+    public ArticleDetailHandler(ArticleService articleService, CommentService commentService) {
         this.articleService = articleService;
+        this.commentService = commentService;
     }
 
 
@@ -48,8 +51,10 @@ public class ArticleDetailHandler implements Handler {
 
         Model model = new Model();
         model.addSingleData("article",article);
-        model.addListData("comment", List.of(new Comment(1L,"댓글1",1L),
-                new Comment(2L,"댓글2",2L)));
+
+        List<Comment> comments = commentService.getListByArticleId(article.getId());
+        System.out.println(comments.size()+" 사이즈");
+        model.addListData("comment",new ArrayList<>(comments));
 
         response.setBody(render(htmlBody, model).getBytes(StandardCharsets.UTF_8));
         return response;

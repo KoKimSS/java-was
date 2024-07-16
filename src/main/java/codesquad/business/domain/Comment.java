@@ -14,4 +14,20 @@ public class Comment {
         this.userId = userId;
         this.posterId = posterId;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Long getPosterId() {
+        return posterId;
+    }
 }
