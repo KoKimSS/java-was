@@ -1,11 +1,11 @@
 package codesquad.business.controller;
 
+import codesquad.business.domain.Member;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.exception.InternalServerException;
 import codesquad.was.handler.Handler;
-import codesquad.business.domain.User;
-import codesquad.business.service.UserService;
+import codesquad.business.service.MemberService;
 import codesquad.was.http.request.HttpRequest;
 import codesquad.was.http.response.HttpResponse;
 import org.slf4j.Logger;
@@ -14,13 +14,13 @@ import org.slf4j.LoggerFactory;
 
 public class SingUpHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(SingUpHandler.class);
-    private final UserService userService;
+    private final MemberService memberService;
 
     // 싱글톤 으로 구현
-    public static SingUpHandler singUpHandler = new SingUpHandler(new UserService());
+    public static SingUpHandler singUpHandler = new SingUpHandler(MemberService.memberService);
 
-    private SingUpHandler(UserService userService) {
-        this.userService = userService;
+    private SingUpHandler(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @Override
@@ -45,8 +45,8 @@ public class SingUpHandler implements Handler {
         }
 
         try {
-            User user = User.factoryMethod(userId, username, password);
-            userService.save(user);
+            Member member = Member.factoryMethod(userId, username, password);
+            memberService.save(member);
             // 처리 완료 후 리디렉션
             HttpResponse.setRedirect(response, HttpStatusCode.FOUND, "/index.html");
         } catch (Exception e) {
