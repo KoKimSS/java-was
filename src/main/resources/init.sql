@@ -22,8 +22,8 @@ CREATE TABLE article (
 
 -- Member 데이터 삽입
 INSERT INTO member (user_id, username, password) VALUES
-                                                     ('user1', 'User One', 'password1'),
-                                                     ('user2', 'User Two', 'password2');
+                                                     ('test1', 'User One', 'test'),
+                                                     ('test2', 'User Two', 'test');
 
 -- Article 데이터 삽입
 INSERT INTO article (title, contents, user_id) VALUES

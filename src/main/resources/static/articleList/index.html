@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../global.css">
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px 0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .header__menu {
+            list-style-type: none;
+            display: flex;
+        }
+        .header__menu li {
+            margin-right: 10px;
+        }
+        .page {
+            margin-top: 20px;
+        }
+        .article {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .article h3 {
+            margin-bottom: 5px;
+        }
+        .article p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <a href="/main"><img src="../img/signiture.svg" /></a>
+        <ul class="header__menu">
+            {{authButton}}
+        </ul>
+    </header>
+    <div class="page">
+        <h2 class="page-title">게시글 목록</h2>
+        [$<div class="article">
+            <h3>{{articles.title}}</h3>
+            <p>{{articles.contents}}</p>
+            <p>{{articles.userId}}</p>
+        </div>$]
+    </div>
+</div>
+</body>
+</html>
