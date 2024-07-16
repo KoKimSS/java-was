@@ -3,42 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../reset.css" rel="stylesheet">
+    <link href="../global.css" rel="stylesheet">
     <title>게시글 목록</title>
-    <link rel="stylesheet" href="../reset.css">
-    <link rel="stylesheet" href="../global.css">
     <style>
-        .container {
-            width: 80%;
-            margin: auto;
-            padding: 20px 0;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-        }
-        .header__menu {
-            list-style-type: none;
-            display: flex;
-        }
-        .header__menu li {
-            margin-right: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
         }
         .page {
-            margin-top: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .page-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
         }
         .article {
-            background-color: #f0f0f0;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            transition: background-color 0.3s ease;
         }
-        .article h3 {
-            margin-bottom: 5px;
+        .article:last-child {
+            border-bottom: none;
+        }
+        .article:hover {
+            background-color: #f0f0f0;
+        }
+        .article h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #007BFF;
         }
         .article p {
-            margin-bottom: 10px;
+            margin: 5px 0;
+            color: #555;
+        }
+        .article a {
+            text-decoration: none;
+            color: inherit;
         }
     </style>
 </head>
@@ -52,11 +62,15 @@
     </header>
     <div class="page">
         <h2 class="page-title">게시글 목록</h2>
-        [$<div class="article">
-            <h3>{{articles.title}}</h3>
-            <p>{{articles.contents}}</p>
-            <p>{{articles.userId}}</p>
-        </div>$]
+        [$
+        <div class="article">
+            <a href="/article/detail?id={{articles.id}}">
+                <h1>{{articles.title}}</h1>
+                <p>{{articles.contents}}</p>
+                <p>{{articles.userId}}</p>
+            </a>
+        </div>
+        $]
     </div>
 </div>
 </body>
