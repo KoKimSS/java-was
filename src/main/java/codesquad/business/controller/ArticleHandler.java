@@ -2,7 +2,6 @@ package codesquad.business.controller;
 
 import codesquad.business.domain.Article;
 import codesquad.business.domain.Member;
-import codesquad.business.repository.ArticleRepository;
 import codesquad.business.service.ArticleService;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.handler.Handler;
@@ -21,7 +20,7 @@ import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
 
 public class ArticleHandler implements Handler {
 
-    public static ArticleHandler articleHandler = new ArticleHandler(new ArticleService(ArticleRepository.ARTICLE_REPOSITORY));
+    public static ArticleHandler articleHandler = new ArticleHandler(ArticleService.articleService);
 
     private final ArticleService articleService;
 

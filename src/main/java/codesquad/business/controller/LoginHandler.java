@@ -32,7 +32,7 @@ public class LoginHandler implements Handler {
     public HttpResponse handlePOSTRequest(HttpRequest request) throws BadRequestException {
         HttpResponse response = new HttpResponse();
 
-        Member member = memberService.getUserByIdAndPw(Long.parseLong(request.getParameter("userId")), request.getParameter("password"));
+        Member member = memberService.getUserByIdAndPw(request.getParameter("userId"), request.getParameter("password"));
 
         //로그인 실패시 redirect
         if (member == null) {

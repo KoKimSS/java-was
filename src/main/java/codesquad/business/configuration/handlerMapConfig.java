@@ -1,9 +1,6 @@
 package codesquad.business.configuration;
 
-import codesquad.business.controller.ArticleHandler;
-import codesquad.business.controller.LoginHandler;
-import codesquad.business.controller.SingUpHandler;
-import codesquad.business.controller.UserListHandler;
+import codesquad.business.controller.*;
 import codesquad.was.handler.HandlerMap;
 
 public class handlerMapConfig {
@@ -15,6 +12,7 @@ public class handlerMapConfig {
         handlerMap.setHandlerMap("/login", LoginHandler.loginHandler);
         handlerMap.setHandlerMap("/user/list", UserListHandler.userListHandler);
         handlerMap.setHandlerMap("/article", ArticleHandler.articleHandler);
+        handlerMap.setHandlerMap("/article/list", ArticleListHandler.articleListHandler);
     }
 
     private handlerMapConfig() {}

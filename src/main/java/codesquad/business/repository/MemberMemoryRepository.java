@@ -27,6 +27,18 @@ public class MemberMemoryRepository implements MemberRepository {
                         .anyMatch(user -> user.getUserId().equals(userId));
     }
 
+    @Override
+    public Member findById(String userId) {
+        return map.values().stream()
+                .filter((user)->user.getUserId().equals(userId))
+                .findFirst().orElseThrow();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return new ArrayList<>(map.values());
+    }
+
     public List<Object> getAllObject() {
         return new ArrayList<>(map.values());
     }

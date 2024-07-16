@@ -4,6 +4,8 @@ import codesquad.business.domain.Member;
 import codesquad.was.exception.DBException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemberJdbcRepository implements MemberRepository {
     public static JdbcTemplate jdbcTemplate = JdbcTemplate.jdbcTemplate;
@@ -94,4 +96,50 @@ public class MemberJdbcRepository implements MemberRepository {
         }
         return false;
     }
+
+    @Override
+    public Member findById(String userId) {
+        String sql = "SELECT * FROM member WHERE user_id = ?";
+        try (
+                Connection conn = JdbcTemplate.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Long id = rs.getLong("id");
+                String userIdFromDb = rs.getString("user_id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                return Member.factoryMethod(id, userIdFromDb, username, password);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Member> findAll() {
+        List<Member> members = new ArrayList<>();
+        String sql = "SELECT * FROM member";
+        try (
+                Connection conn = JdbcTemplate.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Long id = rs.getLong("id");
+                String userId = rs.getString("user_id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                members.add(Member.factoryMethod(id, userId, username, password));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return members;
+    }
+
+
 }

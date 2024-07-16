@@ -8,6 +8,8 @@ import codesquad.was.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class MemberService {
     private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
     private final MemberRepository memberRepository;
@@ -26,7 +28,7 @@ public class MemberService {
         throw new BadRequestException("이미 저장 된 유저 입니다.");
     }
 
-    public Member getUserByIdAndPw(Long userId, String password) throws BadRequestException {
+    public Member getUserByIdAndPw(String userId, String password) throws BadRequestException {
         Member member = memberRepository.findById(userId);
         if(member == null){
             return null;
@@ -45,5 +47,8 @@ public class MemberService {
         return memberRepository.findById(userId);
     }
 
+    public List<Member> getAll() {
+        return memberRepository.findAll();
+    }
 
 }
