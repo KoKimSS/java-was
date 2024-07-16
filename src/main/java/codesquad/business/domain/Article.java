@@ -2,10 +2,12 @@ package codesquad.business.domain;
 
 public class Article {
     private Long id;
+    private String title;
     private String contents;
-    private String userId;
+    private Long userId;
 
-    private Article(Long id, String contents, String userId) {
+    private Article(Long id,String title, String contents, Long userId) {
+        this.title = title;
         this.id = id;
         this.contents = contents;
         this.userId = userId;
@@ -27,15 +29,23 @@ public class Article {
         this.contents = contents;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public static Article FactoryMethod(String contents, String userId) {
-        return new Article(null, contents, userId);
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public static Article FactoryMethod(String title, String contents, Long userId) {
+        return new Article(null,title, contents, userId);
     }
 }
