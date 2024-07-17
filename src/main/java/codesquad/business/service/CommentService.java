@@ -18,4 +18,8 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByArticleId(articleId);
         return comments;
     }
+
+    public Long save(Comment comment) {
+        return commentRepository.save(comment);
+    }
 }

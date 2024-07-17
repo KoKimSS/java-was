@@ -2,6 +2,7 @@ package codesquad.business.controller;
 
 import codesquad.business.domain.Article;
 import codesquad.business.domain.Comment;
+import codesquad.business.domain.Member;
 import codesquad.business.service.ArticleService;
 import codesquad.business.service.CommentService;
 import codesquad.was.exception.BadRequestException;
@@ -13,6 +14,7 @@ import codesquad.was.http.response.HttpResponse;
 import codesquad.was.render.HtmlTemplateRender;
 import codesquad.was.render.Model;
 import codesquad.was.render.Render;
+import codesquad.was.session.Session;
 import codesquad.was.util.ResourceGetter;
 
 import java.nio.charset.StandardCharsets;
@@ -44,16 +46,20 @@ public class ArticleDetailHandler implements Handler {
         }
 
 
+
         response.setStatusCode(HttpStatusCode.OK);
         response.setContentType(Mime.TEXT_HTML);
         byte[] resourceBytesByPath = ResourceGetter.getResourceBytesByPath("/static/articleDetails/index.html");
         String htmlBody = new String(resourceBytesByPath, StandardCharsets.UTF_8);
 
         Model model = new Model();
+        Member member = (Member) request.getSession().getAttribute(Session.userStr);
+        if(member != null) {
+            model.addSingleData("userName",member.getUsername());
+        }
         model.addSingleData("article",article);
 
         List<Comment> comments = commentService.getListByArticleId(article.getId());
-        System.out.println(comments.size()+" 사이즈");
         model.addListData("comment",new ArrayList<>(comments));
 
         response.setBody(render(htmlBody, model).getBytes(StandardCharsets.UTF_8));

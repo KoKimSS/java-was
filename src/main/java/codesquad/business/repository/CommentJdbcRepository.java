@@ -20,7 +20,7 @@ public class CommentJdbcRepository implements CommentRepository{
             statement.setLong(1, key);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Comment(
+                return Comment.factoryMethod(
                         resultSet.getLong("id"),
                         resultSet.getString("contents"),
                         resultSet.getLong("user_Id"),
@@ -75,7 +75,7 @@ public class CommentJdbcRepository implements CommentRepository{
             statement.setLong(1, articleId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Comment comment = new Comment(
+                Comment comment = Comment.factoryMethod(
                         resultSet.getLong("id"),
                         resultSet.getString("contents"),
                         resultSet.getLong("user_Id"),

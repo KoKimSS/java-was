@@ -14,6 +14,7 @@ public class handlerMapConfig {
         handlerMap.setHandlerMap("/article", ArticleHandler.articleHandler);
         handlerMap.setHandlerMap("/article/list", ArticleListHandler.articleListHandler);
         handlerMap.setHandlerMap("/article/detail", ArticleDetailHandler.articleDetailHandler);
+        handlerMap.setHandlerMap("/article/comment", CommentHandler.commentHandler);
     }
 
     private handlerMapConfig() {}
