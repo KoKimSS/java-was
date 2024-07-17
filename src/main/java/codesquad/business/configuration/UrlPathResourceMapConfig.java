@@ -3,9 +3,8 @@ package codesquad.business.configuration;
 import codesquad.was.util.UrlPathResourceMap;
 
 public class UrlPathResourceMapConfig {
-    private final UrlPathResourceMap urlPathResourceMap = UrlPathResourceMap.factoryMethod();
-
-    {
+    private static final UrlPathResourceMap urlPathResourceMap = UrlPathResourceMap.factoryMethod();
+    public static void setUrlPathResourceMap(){
         urlPathResourceMap.setResourcePathMap("/", "/static/index.html");
         urlPathResourceMap.setResourcePathMap("/index.html", "/static/index.html");
         urlPathResourceMap.setResourcePathMap("/login", "/static/login/index.html");
@@ -16,7 +15,6 @@ public class UrlPathResourceMapConfig {
         urlPathResourceMap.setResourcePathMap("/js/main.js", "main.js");
         urlPathResourceMap.setResourcePathMap("/registration", "/static/registration/index.html");
     }
-
     private UrlPathResourceMapConfig() {}
 }
 

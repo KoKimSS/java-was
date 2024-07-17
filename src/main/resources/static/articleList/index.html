@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../reset.css" rel="stylesheet">
+    <link href="../global.css" rel="stylesheet">
+    <title>게시글 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .page-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .article {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        .article:last-child {
+            border-bottom: none;
+        }
+        .article:hover {
+            background-color: #f0f0f0;
+        }
+        .article h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #007BFF;
+        }
+        .article p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .article a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <a href="/"><img src="../img/signiture.svg" /></a>
+        <ul class="header__menu">
+            {{authButton}}
+        </ul>
+    </header>
+    <div class="page">
+        <h2 class="page-title">게시글 목록</h2>
+        [$
+        <div class="article">
+            <a href="/article/detail?id={{articles.id}}">
+                <h1>{{articles.title}}</h1>
+                <p>{{articles.contents}}</p>
+                <p>{{articles.userId}}</p>
+            </a>
+        </div>
+        $]
+    </div>
+</div>
+</body>
+</html>

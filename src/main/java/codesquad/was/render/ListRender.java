@@ -28,6 +28,7 @@ public class ListRender implements Render {
         int lastMatchEnd = 0;
         while (matcher.find()) {
             resultHtml.append(html, lastMatchEnd, matcher.start());
+            lastMatchEnd = matcher.end();
 
             String repeatBlock = matcher.group(1);
             // repeatBlock안에 {{ object. value}}가 있는지 찾고
@@ -52,7 +53,6 @@ public class ListRender implements Render {
                 String singleRenderBlock = singleRender.render(repeatBlock, singleModel);
                 resultHtml.append(singleRenderBlock);
             }
-            lastMatchEnd = matcher.end();
         }
 
         resultHtml.append(html, lastMatchEnd, html.length());

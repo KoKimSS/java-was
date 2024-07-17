@@ -2,6 +2,7 @@ package codesquad.was.http.request;
 
 import codesquad.was.http.common.HttpHeaders;
 import codesquad.was.http.common.HttpMethod;
+import codesquad.was.http.common.Mime;
 import codesquad.was.session.Session;
 
 import java.net.URL;
@@ -16,7 +17,7 @@ public class HttpRequest {
     private String version;
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, String> parameters;
-    private String contentType;
+    private Mime contentType;
     private String body;
     //Cookie name ,value
     private final Map<String, String> cookies = new HashMap<>();
@@ -119,7 +120,7 @@ public class HttpRequest {
                 '}';
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(Mime contentType) {
         this.contentType = contentType;
     }
 

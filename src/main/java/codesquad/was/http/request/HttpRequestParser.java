@@ -1,6 +1,7 @@
 package codesquad.was.http.request;
 
 
+import codesquad.was.http.common.Mime;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static codesquad.was.session.Session.sessionStr;
 
@@ -44,11 +46,7 @@ public class HttpRequestParser {
             requestSb.append(headerLine).append("\n");
             String[] headerParts = headerLine.split(": ", 2);
             if (headerParts.length == 2) {
-                request.addHeader(headerParts[0], headerParts[1]);
-                if (headerParts[0].equalsIgnoreCase("Cookie")) {
-                    parseCookies(headerParts[1], request);
-                }
-
+                addHeaderTo(headerParts, request);
             }
         }
 
@@ -60,9 +58,14 @@ public class HttpRequestParser {
         // GET 이어도 body 를 갖을 수 있게 설정해 놓음
         parseBody(request, reader);
 
-        // sessionId가 존재하면 session 을 할당
-
         return request;
+    }
+
+    private static void addHeaderTo(String[] headerParts, HttpRequest request) {
+        request.addHeader(headerParts[0], headerParts[1]);
+        if (headerParts[0].equalsIgnoreCase("Cookie")) {
+            parseCookies(headerParts[1], request);
+        }
     }
 
     private static void parseCookies(String cookieHeader, HttpRequest request) {
@@ -70,17 +73,21 @@ public class HttpRequestParser {
         Arrays.stream(cookies)
                 .map(cookie -> cookie.split("=", 2))
                 .filter(cookieParts -> cookieParts.length == 2)
-                .forEach(cookieParts -> {
-                    String key = cookieParts[0];
-                    String value = cookieParts[1];
-                    if (key.equals(sessionStr)) {
-                        Session session = Manager.findSession(value);
-                        if (session != null) {
-                            request.addSession(session);
-                        }
-                    }
-                    request.addCookie(key, value);
-                });
+                .forEach(addCookieTo(request));
+    }
+
+    private static Consumer<String[]> addCookieTo(HttpRequest request) {
+        return cookieParts -> {
+            String key = cookieParts[0];
+            String value = cookieParts[1];
+            if (key.equals(sessionStr)) {
+                Session session = Manager.findSession(value);
+                if (session != null) {
+                    request.addSession(session);
+                }
+            }
+            request.addCookie(key, value);
+        };
     }
 
 
@@ -90,7 +97,7 @@ public class HttpRequestParser {
         List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
         if (contentTypeList != null) {
             contentType = contentTypeList.get(0);
-            request.setContentType(contentType);
+            request.setContentType(Mime.fromString(contentType));
         }
         StringBuilder body = new StringBuilder();
 
@@ -111,33 +118,5 @@ public class HttpRequestParser {
         if (contentType == null || contentType.isEmpty()) {
             request.setBody(bodyStr);
         }
-//
-//        // Parse body (if any)
-//        String contentType = null;
-//        List<String> contentTypeList = request.getHeaders().getHeader("Content-Type");
-//        if (contentTypeList != null) {
-//            contentType = contentTypeList.get(0);
-//            request.setContentType(contentType);
-//        }
-//        StringBuilder body = new StringBuilder();
-//
-//        // UTF-8로 디코딩하며 본문 읽기
-//        char[] buffer = new char[1024];
-//        int numCharsRead;
-//        while ((numCharsRead = reader.read(buffer)) != -1) {
-//            body.append(buffer, 0, numCharsRead);
-//        }
-//
-//        String bodyString = body.toString();
-//
-//        if ("application/x-www-form-urlencoded".equals(contentType)) {
-//            request.parseParameters(bodyString);
-//            return;
-//        }
-//
-//        if (contentType == null || contentType.isEmpty()) {
-//            request.setBody(bodyString);
-//        }
-//        logger.info(bodyString);
     }
 }
