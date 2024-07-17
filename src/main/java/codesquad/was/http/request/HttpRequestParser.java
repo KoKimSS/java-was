@@ -1,6 +1,5 @@
 package codesquad.was.http.request;
 
-
 import codesquad.was.http.common.HttpHeaders;
 import codesquad.was.http.common.Mime;
 import codesquad.was.session.Manager;
@@ -8,10 +7,7 @@ import codesquad.was.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -25,11 +21,10 @@ public class HttpRequestParser {
 
     public static HttpRequest parseHttpRequest(InputStream inputStream) throws IOException {
         StringBuilder requestSb = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         HttpRequest request = new HttpRequest();
 
         // Parse request line
-        String requestLine = reader.readLine();
+        String requestLine = readLine(inputStream);
         requestSb.append("\n").append(requestLine).append("\n");
         if (requestLine == null || requestLine.isEmpty()) {
             throw new IOException("Empty request line");
@@ -45,8 +40,7 @@ public class HttpRequestParser {
 
         // Parse headers
         String headerLine;
-
-        while (!(headerLine = reader.readLine()).isEmpty()) {
+        while (!(headerLine = readLine(inputStream)).isEmpty()) {
             logger.info("Header: {}", headerLine);
             requestSb.append(headerLine).append("\n");
             String[] headerParts = headerLine.split(": ", 2);
@@ -60,8 +54,9 @@ public class HttpRequestParser {
         URL url = new URL(protocol, host, path);
         request.setUrl(url);
         logger.info(requestSb.toString());
+
         // GET 이어도 body 를 갖을 수 있게 설정해 놓음
-        parseBody(request, reader);
+        parseBody(request, inputStream);
 
         return request;
     }
@@ -92,15 +87,9 @@ public class HttpRequestParser {
         };
     }
 
-
-    private static void parseBody(HttpRequest request, BufferedReader reader) throws IOException {
-//         Parse body (if any)
+    private static void parseBody(HttpRequest request, InputStream inputStream) throws IOException {
         String contentType = null;
         HttpHeaders headers = request.getHeaders();
-        Set<String> headerNames = headers.getHeaderNames();
-        for (String headerName : headerNames) {
-            System.out.println("헤더이름" + headerName);
-        }
         List<String> contentTypeList = headers.getHeader("Content-Type");
 
         if (contentTypeList != null) {
@@ -111,7 +100,7 @@ public class HttpRequestParser {
         if (contentType != null && contentType.startsWith("multipart/form-data")) {
             String boundary = extractBoundary(contentType);
             if (boundary != null) {
-                parseMultipartData(request, reader, boundary);
+                parseMultipartData(request, inputStream, boundary);
                 return;
             }
         }
@@ -121,18 +110,18 @@ public class HttpRequestParser {
             request.setContentType(Mime.fromString(contentType));
         }
 
-        StringBuilder body = new StringBuilder();
-
-        while (reader.ready()) {
-            body.append((char) reader.read());
+        ByteArrayOutputStream body = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = inputStream.read(buffer)) != -1) {
+            body.write(buffer, 0, read);
         }
 
-        logger.info("리퀘스트 바디{}", body);
+        logger.info("Request body: {}", body);
 
-        String bodyStr = URLDecoder.decode(body.toString(), StandardCharsets.UTF_8);
+        String bodyStr = URLDecoder.decode(body.toString(StandardCharsets.UTF_8.name()), StandardCharsets.UTF_8.name());
 
         if ("application/x-www-form-urlencoded".equals(contentType)) {
-
             request.parseParameters(bodyStr);
             return;
         }
@@ -153,52 +142,56 @@ public class HttpRequestParser {
         return null;
     }
 
-    // Parse the multipart data
-    private static void parseMultipartData(HttpRequest request, BufferedReader reader, String boundary) throws IOException {
+    private static void parseMultipartData(HttpRequest request, InputStream inputStream, String boundary) throws IOException {
         String boundaryLine = "--" + boundary;
         String endBoundaryLine = boundaryLine + "--";
-        String line;
         boolean inPart = false;
         boolean isHeader = true;
         Map<String, String> partHeaders = new HashMap<>();
-        StringBuilder partData = new StringBuilder();
+        ByteArrayOutputStream partData = new ByteArrayOutputStream();
+        StringBuilder currentPart = new StringBuilder();
 
-        while ((line = reader.readLine()) != null) {
-            logger.info("multipartLine: {}", line);
+        int nextByte;
 
-            if (line.equals(boundaryLine)) {
+        while ((nextByte = inputStream.read()) != -1) {
+            currentPart.append((char) nextByte);
+            if (currentPart.toString().endsWith(boundaryLine)) {
                 if (inPart) {
-                    processPart(request, partHeaders, partData.toString());
+                    processPart(request, partHeaders, partData.toByteArray());
                     partHeaders.clear();
-                    partData.setLength(0);
+                    partData.reset();
                 }
                 inPart = true;
                 isHeader = true;
-            } else if (line.equals(endBoundaryLine)) {
+                currentPart.setLength(0);
+            } else if (currentPart.toString().endsWith(endBoundaryLine)) {
                 if (inPart) {
-                    processPart(request, partHeaders, partData.toString());
+                    processPart(request, partHeaders, partData.toByteArray());
                 }
                 break;
             } else if (inPart) {
                 if (isHeader) {
-                    if (line.isEmpty()) {
+                    if (currentPart.toString().endsWith("\r\n\r\n")) {
                         isHeader = false; // End of headers, start of body
-                    } else {
-                        int colonIndex = line.indexOf(':');
+                        currentPart.setLength(0);
+                    } else if (currentPart.toString().endsWith("\r\n")) {
+                        String headerLine = currentPart.toString().trim();
+                        int colonIndex = headerLine.indexOf(':');
                         if (colonIndex != -1) {
-                            String headerName = line.substring(0, colonIndex).trim();
-                            String headerValue = line.substring(colonIndex + 1).trim();
+                            String headerName = headerLine.substring(0, colonIndex).trim();
+                            String headerValue = headerLine.substring(colonIndex + 1).trim();
                             partHeaders.put(headerName, headerValue);
                         }
+                        currentPart.setLength(0);
                     }
                 } else {
-                    partData.append(line).append("\r\n");
+                    partData.write(nextByte);
                 }
             }
         }
     }
 
-    private static void processPart(HttpRequest request, Map<String, String> headers, String data) throws IOException {
+    private static void processPart(HttpRequest request, Map<String, String> headers, byte[] data) throws IOException {
         String contentDisposition = headers.get("Content-Disposition");
         if (contentDisposition != null) {
             Map<String, String> dispositionParams = parseContentDisposition(contentDisposition);
@@ -206,10 +199,9 @@ public class HttpRequestParser {
             String filename = dispositionParams.get("filename");
 
             if (filename != null) {
-                byte[] fileContent = data.getBytes(StandardCharsets.ISO_8859_1);
-                request.addFile(name, filename, fileContent);
+                request.addFile(name, filename, data);
             } else {
-                String value = data.trim();
+                String value = new String(data, StandardCharsets.UTF_8).trim();
                 request.addParameter(name, value);
             }
         }
@@ -227,5 +219,21 @@ public class HttpRequestParser {
             }
         }
         return params;
+    }
+
+    private static String readLine(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nextByte;
+        while ((nextByte = inputStream.read()) != -1) {
+            if (nextByte == '\r') {
+                nextByte = inputStream.read(); // read '\n'
+                if (nextByte == '\n') {
+                    break;
+                }
+                buffer.write('\r');
+            }
+            buffer.write(nextByte);
+        }
+        return buffer.toString(StandardCharsets.UTF_8.name());
     }
 }

@@ -18,6 +18,21 @@ import java.nio.charset.StandardCharsets;
 public class DispatcherServlet {
     private final HandlerMap handlerMap = HandlerMap.factoryMethod();
 
+    public HttpResponse callHandler(HttpRequest request) {
+        Handler handler = handlerMap.getHandler(request.getUrlPath());
+
+        // url 과 매핑이 안되면
+        if (handler == null) {
+            return staticResponse(request);
+        }
+
+        try {
+            return handler.doBusinessByMethod(request);
+        } catch (MethodNotAllowedException e) { // method 와 매핑이 안되면
+            return staticResponse(request);
+        }
+    }
+
     private static HttpResponse staticResponse(HttpRequest request) {
         HttpResponse response = new HttpResponse();
         // URL 매핑이 되지 않으면 정적인 파일만 보냄
@@ -41,20 +56,5 @@ public class DispatcherServlet {
         response.setBody(renderedHtml.getBytes(StandardCharsets.UTF_8));
         System.out.println("정적 파일 전송");
         return response;
-    }
-
-    public HttpResponse callHandler(HttpRequest request) {
-        Handler handler = handlerMap.getHandler(request.getUrlPath());
-
-        // url 과 매핑이 안되면
-        if (handler == null) {
-            return staticResponse(request);
-        }
-
-        try {
-            return handler.doBusinessByMethod(request);
-        } catch (MethodNotAllowedException e) { // method 와 매핑이 안되면
-            return staticResponse(request);
-        }
     }
 }

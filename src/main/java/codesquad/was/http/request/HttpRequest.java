@@ -16,6 +16,11 @@ public class HttpRequest {
 
     private URL url;
     private HttpMethod method;
+
+    public List<File> getFiles() {
+        return files;
+    }
+
     private String urlPath;
     private String version;
     private final HttpHeaders headers = new HttpHeaders();

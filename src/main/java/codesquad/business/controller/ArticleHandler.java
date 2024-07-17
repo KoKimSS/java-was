@@ -5,6 +5,7 @@ import codesquad.business.domain.Member;
 import codesquad.business.service.ArticleService;
 import codesquad.was.exception.BadRequestException;
 import codesquad.was.handler.Handler;
+import codesquad.was.http.common.File;
 import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.http.common.Mime;
 import codesquad.was.http.request.HttpRequest;
@@ -14,6 +15,7 @@ import codesquad.was.render.Model;
 import codesquad.was.session.Session;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static codesquad.business.domain.Article.*;
 import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
@@ -62,6 +64,14 @@ public class ArticleHandler implements Handler {
         String title = request.getParameter("title");
         if(title == null || title.isEmpty()) {
             throw new BadRequestException("content is empty");
+        }
+
+        List<File> files = request.getFiles();
+
+        if(files != null && !files.isEmpty()) {
+            for(File file : files) {
+                File.save(file);
+            }
         }
 
         Member member = (Member)request.getSession().getAttribute(Session.userStr);

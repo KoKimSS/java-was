@@ -51,6 +51,7 @@ public class Server {
                     clientOutput.flush();
                     clientOutput.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                     throw new RuntimeException(e);
                 }
             });

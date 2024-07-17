@@ -54,9 +54,11 @@ public class ArticleDetailHandler implements Handler {
 
         Model model = new Model();
         Member member = (Member) request.getSession().getAttribute(Session.userStr);
+
         if(member != null) {
             model.addSingleData("userName",member.getUsername());
         }
+
         model.addSingleData("article",article);
 
         List<Comment> comments = commentService.getListByArticleId(article.getId());
