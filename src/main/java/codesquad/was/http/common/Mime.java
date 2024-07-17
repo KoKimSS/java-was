@@ -34,6 +34,10 @@ public enum Mime {
 
     // MIME 타입 문자열을 통해 Enum 객체를 얻는 메서드
     public static Mime fromString(String mimeType) {
+        if(mimeType.startsWith(MULTIPART_FORM_DATA.getMimeType())){
+            return MULTIPART_FORM_DATA;
+        }
+
         return Arrays.stream(Mime.values())
                 .filter((m) -> m.getMimeType().equals(mimeType))
                 .findFirst()
