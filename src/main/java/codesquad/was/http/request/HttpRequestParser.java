@@ -87,7 +87,14 @@ public class HttpRequestParser {
         };
     }
 
-    private static void parseBody(HttpRequest request, InputStream inputStream) throws IOException {
+    public static void parseBody(HttpRequest request, InputStream inputStream) throws IOException {
+        List<String> header = request.getHeaders().getHeader("Content-Length");
+        if (header == null) {
+            return;
+        }
+
+        int contentLength = Integer.parseInt(header.get(0));
+
         String contentType = null;
         HttpHeaders headers = request.getHeaders();
         List<String> contentTypeList = headers.getHeader("Content-Type");
@@ -100,7 +107,7 @@ public class HttpRequestParser {
         if (contentType != null && contentType.startsWith("multipart/form-data")) {
             String boundary = extractBoundary(contentType);
             if (boundary != null) {
-                parseMultipartData(request, inputStream, boundary);
+                parseMultipartData(request, inputStream, boundary, contentLength);
                 return;
             }
         }
@@ -111,15 +118,16 @@ public class HttpRequestParser {
         }
 
         ByteArrayOutputStream body = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[8192];
         int read;
-        while ((read = inputStream.read(buffer)) != -1) {
+        int totalRead = 0;
+
+        while (totalRead < contentLength && (read = inputStream.read(buffer, 0, Math.min(buffer.length, contentLength - totalRead))) != -1) {
             body.write(buffer, 0, read);
+            totalRead += read;
         }
 
-        logger.info("Request body: {}", body);
-
-        String bodyStr = URLDecoder.decode(body.toString(StandardCharsets.UTF_8.name()), StandardCharsets.UTF_8.name());
+        String bodyStr = URLDecoder.decode(body.toString(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
         if ("application/x-www-form-urlencoded".equals(contentType)) {
             request.parseParameters(bodyStr);
@@ -132,93 +140,139 @@ public class HttpRequestParser {
     }
 
     private static String extractBoundary(String contentType) {
-        String[] params = contentType.split(";");
-        for (String param : params) {
-            param = param.trim();
-            if (param.startsWith("boundary=")) {
-                return param.substring("boundary=".length());
+        String[] parts = contentType.split(";");
+        for (String part : parts) {
+            if (part.trim().startsWith("boundary=")) {
+                return part.split("=")[1].trim();
             }
         }
         return null;
     }
 
-    private static void parseMultipartData(HttpRequest request, InputStream inputStream, String boundary) throws IOException {
-        String boundaryLine = "--" + boundary;
-        String endBoundaryLine = boundaryLine + "--";
+    private static void parseMultipartData(HttpRequest request, InputStream inputStream, String boundary, int contentLength) throws IOException {
+        byte[] boundaryBytes = ("--" + boundary).getBytes(StandardCharsets.UTF_8);
+        byte[] endBoundaryBytes = ("--" + boundary + "--").getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream partStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
+        int read;
+        int totalRead = 0;
+
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+
         boolean inPart = false;
-        boolean isHeader = true;
-        Map<String, String> partHeaders = new HashMap<>();
-        ByteArrayOutputStream partData = new ByteArrayOutputStream();
-        StringBuilder currentPart = new StringBuilder();
+        int b;
+        while (totalRead < contentLength && (b = bufferedInputStream.read()) != -1) {
+            totalRead++;
+            bufferStream.write(b);
 
-        int nextByte;
-
-        while ((nextByte = inputStream.read()) != -1) {
-            currentPart.append((char) nextByte);
-            if (currentPart.toString().endsWith(boundaryLine)) {
-                if (inPart) {
-                    processPart(request, partHeaders, partData.toByteArray());
-                    partHeaders.clear();
-                    partData.reset();
-                }
-                inPart = true;
-                isHeader = true;
-                currentPart.setLength(0);
-            } else if (currentPart.toString().endsWith(endBoundaryLine)) {
-                if (inPart) {
-                    processPart(request, partHeaders, partData.toByteArray());
-                }
-                break;
-            } else if (inPart) {
-                if (isHeader) {
-                    if (currentPart.toString().endsWith("\r\n\r\n")) {
-                        isHeader = false; // End of headers, start of body
-                        currentPart.setLength(0);
-                    } else if (currentPart.toString().endsWith("\r\n")) {
-                        String headerLine = currentPart.toString().trim();
-                        int colonIndex = headerLine.indexOf(':');
-                        if (colonIndex != -1) {
-                            String headerName = headerLine.substring(0, colonIndex).trim();
-                            String headerValue = headerLine.substring(colonIndex + 1).trim();
-                            partHeaders.put(headerName, headerValue);
-                        }
-                        currentPart.setLength(0);
-                    }
+            if (bufferStream.size() >= boundaryBytes.length) {
+                byte[] bufferArray = bufferStream.toByteArray();
+                if (!inPart && startsWith(bufferArray, boundaryBytes)) {
+                    inPart = true;
+                    bufferStream.reset();
+                } else if (inPart && endsWith(bufferArray, endBoundaryBytes)) {
+                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
+                    break;
+                } else if (inPart && endsWith(bufferArray, boundaryBytes)) {
+                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
+                    partStream.reset();
+                    bufferStream.reset();
                 } else {
-                    partData.write(nextByte);
+                    partStream.write(bufferArray[0]);
+                    bufferStream.reset();
+                    bufferStream.write(bufferArray, 1, bufferArray.length - 1);
                 }
             }
         }
     }
 
-    private static void processPart(HttpRequest request, Map<String, String> headers, byte[] data) throws IOException {
-        String contentDisposition = headers.get("Content-Disposition");
-        if (contentDisposition != null) {
-            Map<String, String> dispositionParams = parseContentDisposition(contentDisposition);
-            String name = dispositionParams.get("name");
-            String filename = dispositionParams.get("filename");
-
-            if (filename != null) {
-                request.addFile(name, filename, data);
-            } else {
-                String value = new String(data, StandardCharsets.UTF_8).trim();
-                request.addParameter(name, value);
+    private static boolean startsWith(byte[] source, byte[] prefix) {
+        if (source.length < prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if (source[i] != prefix[i]) {
+                return false;
             }
         }
+        return true;
     }
 
-    private static Map<String, String> parseContentDisposition(String contentDisposition) {
-        Map<String, String> params = new HashMap<>();
-        String[] parts = contentDisposition.split(";");
-        for (String part : parts) {
-            int equalsIndex = part.indexOf('=');
-            if (equalsIndex != -1) {
-                String name = part.substring(0, equalsIndex).trim();
-                String value = part.substring(equalsIndex + 1).trim().replace("\"", "");
-                params.put(name, value);
+    private static boolean endsWith(byte[] source, byte[] suffix) {
+        if (source.length < suffix.length) {
+            return false;
+        }
+        for (int i = 0; i < suffix.length; i++) {
+            if (source[i] != suffix[i]) {
+                return false;
             }
         }
-        return params;
+        return true;
+    }
+
+    private static void processPart(HttpRequest request, byte[] partData, int offset) throws IOException {
+        ByteArrayInputStream partInputStream = new ByteArrayInputStream(partData);
+        HttpHeaders partHeaders = new HttpHeaders();
+        ByteArrayOutputStream partBody = new ByteArrayOutputStream();
+        boolean headerEnded = false;
+        ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
+        int b;
+        partInputStream.read();
+        partInputStream.read();
+        while ((b = partInputStream.read()) != -1) {
+            String line = bufferStream.toString(StandardCharsets.UTF_8);
+            if (b == '\r') {
+                partInputStream.mark(1);
+                if (partInputStream.read() == '\n') {
+                    if (bufferStream.size() == 0) {
+                        headerEnded = true;
+                        continue;
+                    }
+
+                    if (!headerEnded) {
+                        String[] headerParts = line.split(":");
+                        if(headerParts.length == 2) {
+                            partHeaders.addHeader(headerParts[0].trim(), headerParts[1].trim());
+                        }
+                    } else {
+                        partBody.write(bufferStream.toByteArray());
+                        partBody.write("\r\n".getBytes(StandardCharsets.UTF_8));
+                    }
+
+                    bufferStream.reset();
+                } else {
+                    partInputStream.reset();
+                    bufferStream.write(b);
+                }
+            } else {
+                bufferStream.write(b);
+            }
+        }
+
+        // Handling the last part of the body
+        if (bufferStream.size() > 0) {
+            partBody.write(bufferStream.toByteArray());
+        }
+
+        String disposition = partHeaders.getHeader("Content-Disposition").get(0);
+        String[] dispositionParts = disposition.split(";");
+        String name = null;
+        String filename = null;
+        for (String part : dispositionParts) {
+            if (part.trim().startsWith("name=")) {
+                name = part.split("=")[1].trim().replace("\"", "");
+            } else if (part.trim().startsWith("filename=")) {
+                filename = part.split("=")[1].trim().replace("\"", "");
+            }
+        }
+
+        if (filename != null) {
+            // Process file upload part
+            request.addFile(name, filename, partBody.toByteArray());
+        } else {
+            // Process form field part
+            request.addParameter(name, partBody.toString(StandardCharsets.UTF_8).trim());
+        }
     }
 
     private static String readLine(InputStream inputStream) throws IOException {
@@ -234,6 +288,6 @@ public class HttpRequestParser {
             }
             buffer.write(nextByte);
         }
-        return buffer.toString(StandardCharsets.UTF_8.name());
+        return buffer.toString(StandardCharsets.UTF_8);
     }
 }

@@ -47,9 +47,6 @@ public class Server {
             executorService.execute(() -> {
                 try {
                     webServer.handleClientRequest(clientSocket);
-                    OutputStream clientOutput = clientSocket.getOutputStream();
-                    clientOutput.flush();
-                    clientOutput.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
