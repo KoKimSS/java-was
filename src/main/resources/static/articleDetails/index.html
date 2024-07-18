@@ -1,78 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../reset.css" rel="stylesheet">
-    <link href="../global.css" rel="stylesheet">
-    <title>게시글 상세</title>
-    <style>
-        .comments {
-            margin-top: 20px;
-        }
-        .comment {
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-        }
-        .comment p {
-            margin: 5px 0;
-        }
-        .comment-form {
-            margin-top: 20px;
-        }
-        .comment-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .comment-form button {
-            margin-top: 10px;
-            background-color: #007BFF;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .comment-form button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="../reset.css" rel="stylesheet" />
+  <link href="../global.css" rel="stylesheet" />
+  <link href="../main.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container">
-    <header class="header">
-        <a href="/"><img src="../img/signiture.svg" /></a>
-        <ul class="header__menu">
-            {{authButton}}
+  <header class="header">
+    <a href="/"><img src="../img/signiture.svg" /></a>
+    <ul class="header__menu">
+      {{authButton}}
+    </ul>
+  </header>
+  <div class="wrapper">
+    <div class="post">
+      <div class="post__account">
+        <img class="post__account__img" />
+        <p class="post__account__nickname">{{article.userId}}</p>
+      </div>
+      <img src="/노을이.jpeg" />
+      <div class="post__menu">
+        <ul class="post__menu__personal">
+          <li>
+            <button class="post__menu__btn">
+              <img src="../img/like.svg" />
+            </button>
+          </li>
+          <li>
+            <button class="post__menu__btn">
+              <img src="../img/sendLink.svg" />
+            </button>
+          </li>
         </ul>
-    </header>
-    <div class="page">
-        <h2 class="page-title post__title">게시글 상세</h2>
-        <div class="article">
-            <h1>{{article.title}}</h1>
-            <p>{{article.contents}}</p>
-            <p>작성자: {{article.userId}}</p>
-        </div>
-        <div class="comments">
-            <h3>댓글 목록</h3>
-            [$
-            <div class="comment">
-                <p>{{comment.userId}}</p>
-                <p>{{comment.contents}}</p>
-            </div>
-            $]
-        </div>
-        <div class="comment-form">
-            <h3>댓글 작성</h3>
-            <form action="/article/comment" method="post">
-                <textarea name="contents" placeholder="댓글을 입력하세요" required></textarea>
-                <input type="hidden" name="articleId" value="{{article.id}}">
-                <button type="submit">댓글 작성</button>
-            </form>
-        </div>
+        <button class="post__menu__btn">
+          <img src="../img/bookMark.svg" />
+        </button>
+      </div>
+      <p class="post__article">
+        {{article.contents}}
+      </p>
     </div>
+    <ul class="comment">
+      [$
+      <li class="comment__item">
+        <div class="comment__item__user">
+          <img class="comment__item__user__img" />
+          <p class="comment__item__user__nickname">{{comments.userId}}</p>
+        </div>
+        <p class="comment__item__article">
+          {{comments.contents}}
+        </p>
+      </li>
+      $]
+      <li class="comment__item hidden">
+        <div class="comment__item__user">
+          <img class="comment__item__user__img" />
+          <p class="comment__item__user__nickname">account</p>
+        </div>
+        <p class="comment__item__article">Comment 1</p>
+      </li>
+      <li class="comment__item hidden">
+        <div class="comment__item__user">
+          <img class="comment__item__user__img" />
+          <p class="comment__item__user__nickname">account</p>
+        </div>
+        <p class="comment__item__article">Comment 2</p>
+      </li>
+      <li class="comment__item hidden">
+        <div class="comment__item__user">
+          <img class="comment__item__user__img" />
+          <p class="comment__item__user__nickname">account</p>
+        </div>
+        <p class="comment__item__article">Comment 3</p>
+      </li>
+      <button id="show-all-btn" class="btn btn_ghost btn_size_m">
+        모든 댓글 보기(3개)
+      </button>
+    </ul>
+    <nav class="nav">
+      <ul class="nav__menu">
+        <li class="nav__menu__item">
+          <a class="nav__menu__item__btn" href="">
+            <img
+                    class="nav__menu__item__img"
+                    src="../img/ci_chevron-left.svg"
+            />
+            이전 글
+          </a>
+        </li>
+        <li class="nav__menu__item">
+          <a class="btn btn_ghost btn_size_m">댓글 작성</a>
+        </li>
+        <li class="nav__menu__item">
+          <a class="nav__menu__item__btn" href="">
+            다음 글
+            <img
+                    class="nav__menu__item__img"
+                    src="../img/ci_chevron-right.svg"
+            />
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>
 </body>
 </html>

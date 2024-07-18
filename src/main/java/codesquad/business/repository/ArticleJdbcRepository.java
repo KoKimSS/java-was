@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleJdbcRepository implements ArticleRepository{
+public class ArticleJdbcRepository implements ArticleRepository {
     public static ArticleJdbcRepository articleJdbcRepository = new ArticleJdbcRepository();
 
     @Override
@@ -46,7 +46,8 @@ public class ArticleJdbcRepository implements ArticleRepository{
                 String title = rs.getString("title");
                 String contents = rs.getString("contents");
                 Long userId = rs.getLong("user_id");
-                return Article.FactoryMethod(id, title, contents, userId);
+                String filePath = rs.getString("file_path");
+                return Article.FactoryMethod(id, title, contents, userId, filePath);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +57,7 @@ public class ArticleJdbcRepository implements ArticleRepository{
 
     @Override
     public Long save(Article value) {
-        String sql = "INSERT INTO article (title, contents, user_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO article (title, contents, user_id,file_path) VALUES (?, ?, ?, ?)";
         try (
                 Connection conn = JdbcTemplate.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
@@ -64,6 +65,7 @@ public class ArticleJdbcRepository implements ArticleRepository{
             stmt.setString(1, value.getTitle());
             stmt.setString(2, value.getContents());
             stmt.setLong(3, value.getUserId());
+            stmt.setString(4, value.getFilePath());
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected == 0) {

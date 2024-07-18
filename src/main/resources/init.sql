@@ -11,16 +11,17 @@ CREATE TABLE member (
 
 -- Article 테이블 삭제 및 생성
 DROP TABLE IF EXISTS article CASCADE;
+DROP TABLE IF EXISTS comment CASCADE;
+
+-- Comment 테이블 삭제 및 생성
 CREATE TABLE article (
                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          title VARCHAR(255) NOT NULL,
                          contents TEXT,
                          user_id BIGINT NOT NULL,
-                         FOREIGN KEY (user_id) REFERENCES member(id)
+                         FOREIGN KEY (user_id) REFERENCES member(id),
+                         file_path VARCHAR(255)
 );
-
--- Comment 테이블 삭제 및 생성
-DROP TABLE IF EXISTS comment CASCADE;
 CREATE TABLE comment (
                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          contents TEXT NOT NULL,

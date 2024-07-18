@@ -11,9 +11,7 @@ import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.http.common.Mime;
 import codesquad.was.http.request.HttpRequest;
 import codesquad.was.http.response.HttpResponse;
-import codesquad.was.render.HtmlTemplateRender;
 import codesquad.was.render.Model;
-import codesquad.was.render.Render;
 import codesquad.was.session.Session;
 import codesquad.was.util.ResourceGetter;
 
@@ -62,7 +60,7 @@ public class ArticleDetailHandler implements Handler {
         model.addSingleData("article",article);
 
         List<Comment> comments = commentService.getListByArticleId(article.getId());
-        model.addListData("comment",new ArrayList<>(comments));
+        model.addListData("comments",new ArrayList<>(comments));
 
         response.setBody(render(htmlBody, model).getBytes(StandardCharsets.UTF_8));
         return response;

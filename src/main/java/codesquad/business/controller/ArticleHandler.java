@@ -16,6 +16,7 @@ import codesquad.was.session.Session;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 import static codesquad.business.domain.Article.*;
 import static codesquad.was.util.ResourceGetter.getResourceBytesByPath;
@@ -68,8 +69,12 @@ public class ArticleHandler implements Handler {
 
         List<File> files = request.getFiles();
 
+        String filePath = "";
         if(files != null && !files.isEmpty()) {
             for(File file : files) {
+                String filename = file.getFilename();
+                filePath = UUID.randomUUID().toString().substring(0,4) + "/" + filename;
+                String name = file.getName();
                 File.save(file);
             }
         }
@@ -80,7 +85,7 @@ public class ArticleHandler implements Handler {
             return response;
         }
 
-        Article article = FactoryMethod(title, contents, member.getId());
+        Article article = FactoryMethod(title, contents, member.getId(), filePath);
         long articleId = articleService.saveArticle(article);
         System.out.println("아티클 생성"+articleId);
 

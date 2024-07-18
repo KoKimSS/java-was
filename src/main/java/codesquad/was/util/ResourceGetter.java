@@ -30,6 +30,10 @@ public class ResourceGetter {
             return Mime.IMAGE_SVG;
         } else if (filePath.endsWith(".ico")) {
             return Mime.IMAGE_ICO;
+        } else if(filePath.endsWith(".gif")) {
+            return Mime.IMAGE_GIF;
+        } else if (filePath.endsWith(".jpeg")) {
+            return Mime.IMAGE_JPEG;
         } else {
             return Mime.APPLICATION_OCTET_STREAM;
         }
