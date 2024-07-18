@@ -1,7 +1,8 @@
-package codesquad.was.handler;
+package codesquad.business.controller;
 
 import codesquad.business.domain.Member;
 import codesquad.was.exception.BadRequestException;
+import codesquad.was.handler.Handler;
 import codesquad.was.http.common.HttpCookie;
 import codesquad.was.http.common.HttpStatusCode;
 import codesquad.was.http.request.HttpRequest;
@@ -9,9 +10,9 @@ import codesquad.was.http.response.HttpResponse;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
 
-import static codesquad.was.session.Session.*;
+import static codesquad.was.session.Session.sessionStr;
 
-public class LogoutHandler implements Handler{
+public class LogoutHandler implements Handler {
     public static final LogoutHandler logoutHandler = new LogoutHandler();
 
     @Override
