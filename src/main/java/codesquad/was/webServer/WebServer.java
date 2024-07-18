@@ -60,5 +60,9 @@ public class WebServer {
 
         // outPutStream 에 HttpResponse 추가 !
         HttpResponseSender.sendHttpResponse(clientOutput, response);
+
+        inputStream.close();
+        clientOutput.flush();
+        clientOutput.close();
     }
 }

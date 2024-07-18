@@ -1,18 +1,26 @@
 package codesquad.was.http.request;
 
+import codesquad.was.http.common.File;
 import codesquad.was.http.common.HttpHeaders;
 import codesquad.was.http.common.HttpMethod;
 import codesquad.was.http.common.Mime;
 import codesquad.was.session.Session;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
 
     private URL url;
     private HttpMethod method;
+
+    public List<File> getFiles() {
+        return files;
+    }
+
     private String urlPath;
     private String version;
     private final HttpHeaders headers = new HttpHeaders();
@@ -22,6 +30,7 @@ public class HttpRequest {
     //Cookie name ,value
     private final Map<String, String> cookies = new HashMap<>();
     private Session session;
+    private List<File> files = new ArrayList<>();
 
     public HttpRequest() {
         parameters = new HashMap<>();
@@ -142,5 +151,14 @@ public class HttpRequest {
 
     public void addSession(Session session) {
         this.session = session;
+    }
+
+    public void addParameter(String key, String value) {
+        parameters.put(key, value);
+    }
+
+
+    public void addFile(String name, String filename, byte[] fileContent) {
+        files.add(new File(name, filename, fileContent));
     }
 }

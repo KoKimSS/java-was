@@ -5,8 +5,17 @@ public class Article {
     private String title;
     private String contents;
     private Long userId;
+    private String filePath;
 
-    private Article(Long id,String title, String contents, Long userId) {
+    public Article(Long id, String title, String contents, Long userId, String filePath) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.userId = userId;
+        this.filePath = filePath;
+    }
+
+    private Article(Long id, String title, String contents, Long userId) {
         this.title = title;
         this.id = id;
         this.contents = contents;
@@ -45,11 +54,21 @@ public class Article {
         this.title = title;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     public static Article FactoryMethod(String title, String contents, Long userId) {
         return new Article(null,title, contents, userId);
     }
-
+    public static Article FactoryMethod(String title, String contents, Long userId,String filePath) {
+        return new Article(null,title, contents, userId);
+    }
     public static Article FactoryMethod(Long id,String title, String contents, Long userId) {
         return new Article(id,title, contents, userId);
+    }
+
+    public static Article FactoryMethod(Long id,String title, String contents, Long userId,String filePath) {
+        return new Article(id,title, contents, userId,filePath);
     }
 }
