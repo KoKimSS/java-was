@@ -5,7 +5,6 @@ import codesquad.was.http.request.HttpRequest;
 import codesquad.was.http.response.HttpResponse;
 
 public interface Handler {
-
     default HttpResponse handlePOSTRequest(HttpRequest request){
         throw new MethodNotAllowedException();
     }
