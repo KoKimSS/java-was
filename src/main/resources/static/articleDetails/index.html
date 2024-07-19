@@ -52,9 +52,9 @@
     <div class="post">
       <div class="post__account">
         <img class="post__account__img" />
-        <p class="post__account__nickname">{{article.userId}}</p>
+        <p class="post__account__nickname">{{article.userName}}</p>
       </div>
-      <img src="/노을이.jpeg" />
+      <img src="/{{article.filePath}}" />
       <div class="post__menu">
         <ul class="post__menu__personal">
           <li>
@@ -81,7 +81,7 @@
       <li class="comment__item">
         <div class="comment__item__user">
           <img class="comment__item__user__img" />
-          <p class="comment__item__user__nickname">{{comments.userId}}</p>
+          <p class="comment__item__user__nickname">{{comments.userName}}</p>
         </div>
         <p class="comment__item__article">
           {{comments.contents}}
