@@ -26,6 +26,10 @@ public class File {
         return filename;
     }
 
+    public void setFileName(String filename) {
+        this.filename = filename;
+    }
+
     public byte[] getFileContent() {
         return fileContent;
     }
@@ -58,5 +62,4 @@ public class File {
 
         return fileContent;
     }
-
 }
