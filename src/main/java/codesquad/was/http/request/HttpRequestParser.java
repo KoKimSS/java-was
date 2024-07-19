@@ -226,7 +226,6 @@ public class HttpRequestParser {
                 if (partInputStream.read() == '\n') {
                     String line = bufferStream.toString(StandardCharsets.UTF_8);
                     if (bufferStream.size() == 0) {
-                        headerEnded = true;
                         bufferStream.reset();
                         break;
                     }

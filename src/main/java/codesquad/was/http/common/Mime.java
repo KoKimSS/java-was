@@ -17,6 +17,7 @@ public enum Mime {
     IMAGE_GIF("image/gif"),
     IMAGE_SVG("image/svg+xml"),
     IMAGE_ICO("image/x-icon"),
+    IMAGE_WEBP("image/webp"),
     APPLICATION_JAVASCRIPT("application/javascript"),
     APPLICATION_OCTET_STREAM("application/octet-stream"),
     APPLICATION_X_WWW_FORM_URLENCODED("application/x-www-form-urlencoded"),
