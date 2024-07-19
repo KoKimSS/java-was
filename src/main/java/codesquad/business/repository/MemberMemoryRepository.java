@@ -63,4 +63,8 @@ public class MemberMemoryRepository implements MemberRepository {
     public void deleteById(Long key) {
 
     }
+
+    public void deleteAll() {
+        map.clear();
+    }
 }
