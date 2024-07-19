@@ -2,7 +2,6 @@ package codesquad;
 
 import codesquad.was.server.Server;
 import java.io.IOException;
-import java.sql.SQLException;
 
 
 
