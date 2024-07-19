@@ -67,17 +67,6 @@ public class ArticleHandler implements Handler {
             throw new BadRequestException("content is empty");
         }
 
-        List<File> files = request.getFiles();
-
-        String filePath = "";
-        if(files != null && !files.isEmpty()) {
-            for(File file : files) {
-                String filename = file.getFilename();
-                filePath = UUID.randomUUID().toString().substring(0,4) + "/" + filename;
-                String name = file.getName();
-                File.save(file);
-            }
-        }
 
         Member member = (Member)request.getSession().getAttribute(Session.userStr);
         if(member == null) {
@@ -85,6 +74,21 @@ public class ArticleHandler implements Handler {
             return response;
         }
 
+        List<File> files = request.getFiles();
+
+
+        String filePath = "";
+
+        if(files != null && !files.isEmpty()) {
+            for(File file : files) {
+                String filename = file.getFilename();
+                filePath = UUID.randomUUID().toString().substring(0,4) + filename;
+                String name = file.getName();
+                file.setFileName(filePath);
+                File.save(file);
+            }
+        }
+        System.out.println(filePath+" 파일패스");
         Article article = FactoryMethod(title, contents, member.getId(), filePath);
         long articleId = articleService.saveArticle(article);
         System.out.println("아티클 생성"+articleId);

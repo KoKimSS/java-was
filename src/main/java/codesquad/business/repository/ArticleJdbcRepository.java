@@ -1,5 +1,6 @@
 package codesquad.business.repository;
 
+import codesquad.business.dao.ArticleDao;
 import codesquad.business.domain.Article;
 import codesquad.was.exception.DBException;
 
@@ -98,5 +99,31 @@ public class ArticleJdbcRepository implements ArticleRepository {
         } catch (SQLException e) {
             throw new DBException("db Exception: " + e.getMessage());
         }
+    }
+
+    @Override
+    public ArticleDao getArticleDao(Long key) {
+        String sql = "SELECT a.*, m.username FROM article a JOIN member m ON a.user_id = m.id WHERE a.id = ?";
+
+        try (Connection conn = JdbcTemplate.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, key);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Long id = rs.getLong("id");
+                    String title = rs.getString("title");
+                    String contents = rs.getString("contents");
+                    Long userId = rs.getLong("user_id");
+                    String filePath = rs.getString("file_path");
+                    String userName = rs.getString("username");
+                    ArticleDao articleDao = new ArticleDao(id,title,contents,userId,userName,filePath);
+                    return articleDao;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

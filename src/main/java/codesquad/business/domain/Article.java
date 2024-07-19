@@ -62,7 +62,7 @@ public class Article {
         return new Article(null,title, contents, userId);
     }
     public static Article FactoryMethod(String title, String contents, Long userId,String filePath) {
-        return new Article(null,title, contents, userId);
+        return new Article(null,title, contents, userId,filePath);
     }
     public static Article FactoryMethod(Long id,String title, String contents, Long userId) {
         return new Article(id,title, contents, userId);
