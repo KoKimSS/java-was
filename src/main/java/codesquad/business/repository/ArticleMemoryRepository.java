@@ -1,5 +1,6 @@
 package codesquad.business.repository;
 
+import codesquad.business.dao.ArticleDao;
 import codesquad.business.domain.Article;
 
 import java.util.List;
@@ -34,5 +35,11 @@ public class ArticleMemoryRepository implements ArticleRepository {
     @Override
     public List<Article> findAll() {
         return map.values().stream().toList();
+    }
+
+    @Override
+    public ArticleDao getArticleDao(Long key) {
+
+        return null;
     }
 }

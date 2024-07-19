@@ -1,5 +1,6 @@
 package codesquad.business.repository;
 
+import codesquad.business.dao.CommentDao;
 import codesquad.business.domain.Comment;
 
 import java.sql.*;
@@ -88,4 +89,29 @@ public class CommentJdbcRepository implements CommentRepository{
         }
         return comments;
     }
+
+    @Override
+    public List<CommentDao> findAllDaoByArticleId(Long articleId) {
+        String query = "SELECT c.*, m.username FROM comment c JOIN member m ON c.user_id = m.id WHERE c.poster_id = ?";
+        List<CommentDao> comments = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, articleId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                CommentDao comment = new CommentDao(
+                        resultSet.getLong("id"),
+                        resultSet.getString("contents"),
+                        resultSet.getLong("user_id"),
+                        resultSet.getString("username"),
+                        resultSet.getLong("poster_id")
+                );
+                comments.add(comment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
+
 }

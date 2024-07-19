@@ -1,5 +1,6 @@
 package codesquad.business.service;
 
+import codesquad.business.dao.CommentDao;
 import codesquad.business.domain.Comment;
 import codesquad.business.repository.CommentJdbcRepository;
 import codesquad.business.repository.CommentRepository;
@@ -19,6 +20,9 @@ public class CommentService {
         return comments;
     }
 
+    public List<CommentDao> getDaoListByArticleId(Long articleId) {
+        return commentRepository.findAllDaoByArticleId(articleId);
+    }
     public Long save(Comment comment) {
         return commentRepository.save(comment);
     }

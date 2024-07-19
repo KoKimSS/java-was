@@ -1,5 +1,7 @@
 package codesquad.business.controller;
 
+import codesquad.business.dao.ArticleDao;
+import codesquad.business.dao.CommentDao;
 import codesquad.business.domain.Article;
 import codesquad.business.domain.Comment;
 import codesquad.business.domain.Member;
@@ -37,7 +39,7 @@ public class ArticleDetailHandler implements Handler {
         HttpResponse response = new HttpResponse();
 
         Long id = Long.parseLong(request.getParameter("id"));
-        Article article = articleService.findById(id);
+        ArticleDao article = articleService.findDaoById(id);
 
         if(article == null) {
             throw new BadRequestException("Article not found");
@@ -59,7 +61,7 @@ public class ArticleDetailHandler implements Handler {
 
         model.addSingleData("article",article);
 
-        List<Comment> comments = commentService.getListByArticleId(article.getId());
+        List<CommentDao> comments = commentService.getDaoListByArticleId(article.getId());
         model.addListData("comments",new ArrayList<>(comments));
 
         response.setBody(render(htmlBody, model).getBytes(StandardCharsets.UTF_8));
