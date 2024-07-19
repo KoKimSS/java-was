@@ -33,7 +33,7 @@ class HttpRequestParserTest {
         assertEquals("HTTP/1.1", request.getVersion());
         assertEquals("[example.com]", request.getHeaders().getHeader("Host").toString());
         assertEquals("[test-agent]", request.getHeaders().getHeader("User-Agent").toString());
-        assertEquals("body content", request.getBody());
+        assertEquals(null, request.getBody());
     }
 
     @Test
@@ -52,7 +52,7 @@ class HttpRequestParserTest {
         assertEquals("HTTP/1.1", request.getVersion());
         assertThat("[example.com]").isEqualTo(request.getHeaders().getHeader("Host").toString());
         assertThat("[test-agent]").isEqualTo(request.getHeaders().getHeader("User-Agent").toString());
-        assertEquals(request.getBody(),"");
+        assertEquals(request.getBody(),null);
     }
 
     @Test
