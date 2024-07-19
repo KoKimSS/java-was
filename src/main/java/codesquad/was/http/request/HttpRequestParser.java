@@ -164,6 +164,7 @@ public class HttpRequestParser {
         while (totalRead < contentLength && (b = bufferedInputStream.read()) != -1) {
             totalRead++;
             bufferStream.write(b);
+//            System.out.println("토탈리드 "+totalRead);
 
             if (bufferStream.size() >= boundaryBytes.length) {
                 byte[] bufferArray = bufferStream.toByteArray();
@@ -171,10 +172,10 @@ public class HttpRequestParser {
                     inPart = true;
                     bufferStream.reset();
                 } else if (inPart && endsWith(bufferArray, endBoundaryBytes)) {
-                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
+                    processPart(request, partStream.toByteArray());
                     break;
                 } else if (inPart && endsWith(bufferArray, boundaryBytes)) {
-                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
+                    processPart(request, partStream.toByteArray());
                     partStream.reset();
                     bufferStream.reset();
                 } else {
@@ -210,7 +211,7 @@ public class HttpRequestParser {
         return true;
     }
 
-    private static void processPart(HttpRequest request, byte[] partData, int offset) throws IOException {
+    private static void processPart(HttpRequest request, byte[] partData) throws IOException {
         ByteArrayInputStream partInputStream = new ByteArrayInputStream(partData);
         HttpHeaders partHeaders = new HttpHeaders();
         ByteArrayOutputStream partBody = new ByteArrayOutputStream();
@@ -220,28 +221,24 @@ public class HttpRequestParser {
         partInputStream.read();
         partInputStream.read();
         while ((b = partInputStream.read()) != -1) {
-            String line = bufferStream.toString(StandardCharsets.UTF_8);
             if (b == '\r') {
                 partInputStream.mark(1);
                 if (partInputStream.read() == '\n') {
+                    String line = bufferStream.toString(StandardCharsets.UTF_8);
                     if (bufferStream.size() == 0) {
                         headerEnded = true;
-                        continue;
+                        bufferStream.reset();
+                        break;
                     }
 
                     if (!headerEnded) {
                         String[] headerParts = line.split(":");
-                        if(headerParts.length == 2) {
+                        if (headerParts.length == 2) {
                             partHeaders.addHeader(headerParts[0].trim(), headerParts[1].trim());
                         }
-                    } else {
-                        partBody.write(bufferStream.toByteArray());
-                        partBody.write("\r\n".getBytes(StandardCharsets.UTF_8));
                     }
-
                     bufferStream.reset();
                 } else {
-                    partInputStream.reset();
                     bufferStream.write(b);
                 }
             } else {
@@ -249,10 +246,9 @@ public class HttpRequestParser {
             }
         }
 
-        // Handling the last part of the body
-        if (bufferStream.size() > 0) {
-            partBody.write(bufferStream.toByteArray());
-        }
+        // Read the rest of the body
+        byte[] body = partInputStream.readAllBytes();
+        partBody.write(body);
 
         String disposition = partHeaders.getHeader("Content-Disposition").get(0);
         String[] dispositionParts = disposition.split(";");
