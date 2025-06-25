@@ -14,6 +14,9 @@ public class UrlPathResourceMapConfig {
         urlPathResourceMap.setResourcePathMap("/css/styles.css", "styles.css");
         urlPathResourceMap.setResourcePathMap("/js/main.js", "main.js");
         urlPathResourceMap.setResourcePathMap("/registration", "/static/registration/index.html");
+        
+        // 성능 테스트 페이지 추가
+        urlPathResourceMap.setResourcePathMap("/performance-test", "/static/performance-test.html");
     }
     private UrlPathResourceMapConfig() {}
 }

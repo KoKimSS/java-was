@@ -31,7 +31,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'org.apache.httpcomponents:httpclient:4.5'
 
-
     //db
     // H2 Database JDBC Driver
     implementation 'com.h2database:h2:2.3.230' // 버전은 최신 버전으로 변경 가능
@@ -39,9 +38,11 @@ dependencies {
 
     implementation 'mysql:mysql-connector-java:8.0.28'
 
-
     implementation 'org.slf4j:slf4j-api:2.0.6'
     implementation 'ch.qos.logback:logback-classic:1.4.5'
+    
+    // JSON 처리를 위한 Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 test {
