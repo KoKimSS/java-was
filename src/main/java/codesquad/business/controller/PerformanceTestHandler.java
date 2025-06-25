@@ -27,14 +27,16 @@ public class PerformanceTestHandler implements Handler {
         try {
             String testType = request.getParameter("type");
             String delayParam = request.getParameter("delay");
-            
+            String loopParam = request.getParameter("loop");
+
             int delay = delayParam != null ? Integer.parseInt(delayParam) : 100;
-            
+            int loop = loopParam != null ? Integer.parseInt(loopParam) : 100;
+
             Map<String, Object> result = switch (testType != null ? testType : "mixed") {
                 case "db" -> performanceTestService.performDatabaseTest(delay);
                 case "file" -> performanceTestService.performFileTest(delay);
                 case "network" -> performanceTestService.performNetworkTest(delay);
-                case "mixed" -> performanceTestService.performMixedTest(delay);
+                case "cpu" -> performanceTestService.performCpuIntensiveTest(loop);
                 default -> performanceTestService.performMixedTest(delay);
             };
             

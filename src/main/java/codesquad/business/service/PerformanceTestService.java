@@ -198,6 +198,23 @@ public class PerformanceTestService {
         return results;
     }
 
+    // PerformanceTestService에 추가
+    public Map<String, Object> performCpuIntensiveTest(int iterations) {
+        long startTime = System.currentTimeMillis();
+
+        // CPU 집약적 작업
+        long result = 0;
+        for (int i = 0; i < iterations * 100000; i++) {
+            result += Math.sqrt(i) * Math.sin(i);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("type", "cpu");
+        response.put("result", result);
+        response.put("duration", System.currentTimeMillis() - startTime);
+        return response;
+    }
+
     private String generateLargeContent(int lines) {
         StringBuilder content = new StringBuilder();
         Random random = ThreadLocalRandom.current();
