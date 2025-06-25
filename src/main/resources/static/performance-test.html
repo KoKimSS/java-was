@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I/O 성능 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #results { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px; white-space: pre-wrap; }
+        .stats { margin: 10px 0; padding: 10px; background: #e9ecef; border-radius: 3px; }
+        .concurrent-test { margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 I/O 성능 테스트</h1>
+    
+    <div class="test-section">
+        <h3>단일 요청 테스트</h3>
+        <button onclick="performTest('db')">📊 Database Test</button>
+        <button onclick="performTest('file')">📁 File I/O Test</button>
+        <button onclick="performTest('network')">🌐 Network Test</button>
+        <button onclick="performTest('mixed')">🔄 Mixed Test</button>
+        
+        <div style="margin-top: 10px;">
+            <label>지연 시간 (ms): <input type="number" id="delay" value="100" min="0" max="5000"></label>
+        </div>
+    </div>
+    
+    <div class="concurrent-test">
+        <h3>동시 요청 테스트 (NIO 성능 확인)</h3>
+        <label>동시 요청 수: <input type="number" id="concurrentCount" value="10" min="1" max="100"></label>
+        <button onclick="performConcurrentTest()">🔥 동시 요청 테스트</button>
+        <button onclick="performLoadTest()">⚡ 부하 테스트 (50개 요청)</button>
+    </div>
+    
+    <div class="stats" id="stats" style="display: none;">
+        <h4>📈 통계</h4>
+        <div id="statsContent"></div>
+    </div>
+    
+    <div id="results">테스트 결과가 여기에 표시됩니다...</div>
+
+    <script>
+        let testCount = 0;
+        let totalDuration = 0;
+        
+        async function performTest(type) {
+            const delay = document.getElementById('delay').value;
+            const startTime = Date.now();
+            
+            updateResults(`🔄 ${type.toUpperCase()} 테스트 시작... (지연: ${delay}ms)`);
+            
+            try {
+                const response = await fetch(`/api/performance-test?type=${type}&delay=${delay}`);
+                const result = await response.json();
+                const clientDuration = Date.now() - startTime;
+                
+                testCount++;
+                totalDuration += clientDuration;
+                
+                updateResults(`✅ ${type.toUpperCase()} 테스트 완료!\n\n` +
+                            `서버 처리 시간: ${result.duration}ms\n` +
+                            `클라이언트 전체 시간: ${clientDuration}ms\n` +
+                            `결과: ${JSON.stringify(result, null, 2)}`);
+                
+                updateStats();
+                
+            } catch (error) {
+                updateResults(`❌ 테스트 실패: ${error.message}`);
+            }
+        }
+        
+        async function performConcurrentTest() {
+            const count = parseInt(document.getElementById('concurrentCount').value);
+            const delay = document.getElementById('delay').value;
+            
+            updateResults(`🚀 동시 요청 ${count}개 시작...`);
+            const startTime = Date.now();
+            
+            const promises = [];
+            for (let i = 0; i < count; i++) {
+                promises.push(
+                    fetch(`/api/performance-test?type=mixed&delay=${delay}`)
+                        .then(r => r.json())
+                        .then(result => ({ success: true, duration: result.duration }))
+                        .catch(error => ({ success: false, error: error.message }))
+                );
+            }
+            
+            try {
+                const results = await Promise.all(promises);
+                const totalTime = Date.now() - startTime;
+                
+                const successful = results.filter(r => r.success).length;
+                const avgDuration = results
+                    .filter(r => r.success)
+                    .reduce((sum, r) => sum + r.duration, 0) / successful;
+                
+                updateResults(`✅ 동시 요청 테스트 완료!\n\n` +
+                            `총 요청: ${count}개\n` +
+                            `성공: ${successful}개\n` +
+                            `실패: ${count - successful}개\n` +
+                            `전체 소요 시간: ${totalTime}ms\n` +
+                            `평균 서버 처리 시간: ${avgDuration.toFixed(2)}ms\n` +
+                            `초당 처리량: ${(count / (totalTime / 1000)).toFixed(2)} req/sec`);
+                
+            } catch (error) {
+                updateResults(`❌ 동시 요청 테스트 실패: ${error.message}`);
+            }
+        }
+        
+        async function performLoadTest() {
+            updateResults(`⚡ 부하 테스트 시작... (50개 연속 요청)`);
+            const startTime = Date.now();
+            
+            const results = [];
+            
+            for (let i = 0; i < 50; i++) {
+                try {
+                    const reqStart = Date.now();
+                    const response = await fetch('/api/performance-test?type=db&delay=50');
+                    const result = await response.json();
+                    const reqTime = Date.now() - reqStart;
+                    
+                    results.push({
+                        request: i + 1,
+                        clientTime: reqTime,
+                        serverTime: result.duration,
+                        success: true
+                    });
+                    
+                    if ((i + 1) % 10 === 0) {
+                        updateResults(`진행중... ${i + 1}/50 완료`);
+                    }
+                    
+                } catch (error) {
+                    results.push({
+                        request: i + 1,
+                        error: error.message,
+                        success: false
+                    });
+                }
+            }
+            
+            const totalTime = Date.now() - startTime;
+            const successful = results.filter(r => r.success);
+            const avgClientTime = successful.reduce((sum, r) => sum + r.clientTime, 0) / successful.length;
+            const avgServerTime = successful.reduce((sum, r) => sum + r.serverTime, 0) / successful.length;
+            
+            updateResults(`🎯 부하 테스트 결과\n\n` +
+                        `총 요청: 50개\n` +
+                        `성공: ${successful.length}개\n` +
+                        `전체 소요 시간: ${totalTime}ms\n` +
+                        `평균 클라이언트 시간: ${avgClientTime.toFixed(2)}ms\n` +
+                        `평균 서버 처리 시간: ${avgServerTime.toFixed(2)}ms\n` +
+                        `처리량: ${(50 / (totalTime / 1000)).toFixed(2)} req/sec`);
+        }
+        
+        function updateResults(content) {
+            document.getElementById('results').textContent = content;
+        }
+        
+        function updateStats() {
+            const avgDuration = (totalDuration / testCount).toFixed(2);
+            document.getElementById('statsContent').innerHTML = 
+                `총 테스트: ${testCount}회<br>` +
+                `평균 응답 시간: ${avgDuration}ms`;
+            document.getElementById('stats').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

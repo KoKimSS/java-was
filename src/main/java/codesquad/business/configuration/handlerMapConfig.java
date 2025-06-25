@@ -16,6 +16,9 @@ public class handlerMapConfig {
         handlerMap.setHandlerMap("/article/detail", ArticleDetailHandler.articleDetailHandler);
         handlerMap.setHandlerMap("/article/comment", CommentHandler.commentHandler);
         handlerMap.setHandlerMap("/logout", LogoutHandler.logoutHandler);
+        
+        // 성능 테스트 API 추가
+        handlerMap.setHandlerMap("/api/performance-test", PerformanceTestHandler.performanceTestHandler);
     }
 
     private handlerMapConfig() {}

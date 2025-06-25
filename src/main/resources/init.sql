@@ -1,6 +1,9 @@
 -- SQL 스크립트: init_tables.sql
 
 -- Member 테이블 삭제 및 생성
+-- Article 테이블 삭제 및 생성
+DROP TABLE IF EXISTS comment CASCADE;
+DROP TABLE IF EXISTS article CASCADE;
 DROP TABLE IF EXISTS member CASCADE;
 CREATE TABLE member (
                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -8,10 +11,6 @@ CREATE TABLE member (
                         username VARCHAR(255) NOT NULL,
                         password VARCHAR(255) NOT NULL
 );
-
--- Article 테이블 삭제 및 생성
-DROP TABLE IF EXISTS article CASCADE;
-DROP TABLE IF EXISTS comment CASCADE;
 
 -- Comment 테이블 삭제 및 생성
 CREATE TABLE article (

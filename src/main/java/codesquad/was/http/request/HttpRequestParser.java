@@ -1,6 +1,6 @@
 package codesquad.was.http.request;
 
-import codesquad.was.http.common.HttpHeaders;
+import codesquad.was.http.common.HttpCookie;
 import codesquad.was.http.common.Mime;
 import codesquad.was.session.Manager;
 import codesquad.was.session.Session;
@@ -8,286 +8,275 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Consumer;
-
-import static codesquad.was.session.Session.sessionStr;
+import java.util.List;
 
 public class HttpRequestParser {
+
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
 
+    /**
+     * InputStream에서 HTTP 요청 파싱 (기존 메서드 유지)
+     */
     public static HttpRequest parseHttpRequest(InputStream inputStream) throws IOException {
-        StringBuilder requestSb = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        return parseHttpRequest(reader);
+    }
+
+    /**
+     * String에서 HTTP 요청 파싱 (NIO용 새로운 메서드)
+     */
+    public static HttpRequest parseHttpRequest(String requestData) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(requestData));
+        return parseHttpRequest(reader);
+    }
+
+    /**
+     * BufferedReader에서 HTTP 요청 파싱 (공통 로직)
+     */
+    private static HttpRequest parseHttpRequest(BufferedReader reader) throws IOException {
         HttpRequest request = new HttpRequest();
 
-        // Parse request line
-        String requestLine = readLine(inputStream);
-        requestSb.append("\n").append(requestLine).append("\n");
+        // 첫 번째 줄 파싱 (Request Line)
+        String requestLine = reader.readLine();
         if (requestLine == null || requestLine.isEmpty()) {
-            throw new IOException("Empty request line");
+            throw new IOException("Invalid HTTP request: empty request line");
         }
-        String[] requestLineParts = requestLine.split(" ");
-        if (requestLineParts.length != 3) {
-            throw new IOException("Invalid request line: " + requestLine);
-        }
-        String method = requestLineParts[0];
-        request.setMethod(method);
-        String path = requestLineParts[1];
-        request.setVersion(requestLineParts[2]);
 
-        // Parse headers
-        String headerLine;
-        while (!(headerLine = readLine(inputStream)).isEmpty()) {
-            logger.info("Header: {}", headerLine);
-            requestSb.append(headerLine).append("\n");
-            String[] headerParts = headerLine.split(": ", 2);
-            if (headerParts.length == 2) {
-                addHeaderTo(headerParts, request);
+        parseRequestLine(request, requestLine);
+
+        // 헤더 파싱
+        String line;
+        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+            parseHeader(request, line);
+        }
+
+        // Content-Type 설정
+        List<String> contentType = request.getHeaders().getHeader("Content-Type");
+        if (contentType != null) {
+            String contentTypeStr = contentType.get(0);
+            request.setContentType(Mime.fromString(contentTypeStr));
+        }
+
+        // 쿠키 파싱
+        List<String> cookieHeader = request.getHeaders().getHeader("Cookie");
+        if (cookieHeader != null) {
+            String cookie = cookieHeader.get(0);
+            if (cookie != null) {
+                parseCookies(request, cookie);
             }
         }
 
-        String host = request.getHeaders().getHeader("Host").get(0);
-        String protocol = "http";
-        URL url = new URL(protocol, host, path);
-        request.setUrl(url);
-        logger.info(requestSb.toString());
 
-        // GET 이어도 body 를 갖을 수 있게 설정해 놓음
-        parseBody(request, inputStream);
+        // 세션 처리
+        processSession(request);
+
+        // 바디 파싱 (POST 요청 등)
+        List<String> contentLengthHeader = request.getHeaders().getHeader("Content-Length");
+        if (contentLengthHeader != null) {
+            String contentLength = contentLengthHeader.get(0);
+            try {
+                if (Integer.parseInt(contentLength) > 0) {
+                    parseBody(request, reader, Integer.parseInt(contentLength));
+                }
+            } catch (NumberFormatException e) {
+                logger.warn("Invalid Content-Length header: {}", contentLength);
+            }
+        }
+
 
         return request;
     }
 
-    private static void addHeaderTo(String[] headerParts, HttpRequest request) {
-        request.addHeader(headerParts[0], headerParts[1]);
-        if (headerParts[0].equalsIgnoreCase("Cookie")) {
-            parseCookies(headerParts[1], request);
+    private static void parseRequestLine(HttpRequest request, String requestLine) throws IOException {
+        String[] parts = requestLine.split(" ");
+        if (parts.length != 3) {
+            throw new IOException("Invalid request line: " + requestLine);
         }
-    }
 
-    private static void parseCookies(String cookieHeader, HttpRequest request) {
-        String[] cookies = cookieHeader.split("; ");
-        Arrays.stream(cookies).map(cookie -> cookie.split("=", 2)).filter(cookieParts -> cookieParts.length == 2).forEach(addCookieTo(request));
-    }
+        request.setMethod(parts[0]);
+        request.setVersion(parts[2]);
 
-    private static Consumer<String[]> addCookieTo(HttpRequest request) {
-        return cookieParts -> {
-            String key = cookieParts[0];
-            String value = cookieParts[1];
-            if (key.equals(sessionStr)) {
-                Session session = Manager.findSession(value);
-                if (session != null) {
-                    request.addSession(session);
-                }
+        try {
+            // URL이 절대 경로가 아닌 경우 http://localhost 추가
+            String urlString = parts[1];
+            if (!urlString.startsWith("http://") && !urlString.startsWith("https://")) {
+                urlString = "http://localhost" + urlString;
             }
-            request.addCookie(key, value);
-        };
+            request.setUrl(new URL(urlString));
+        } catch (MalformedURLException e) {
+            throw new IOException("Invalid URL: " + parts[1], e);
+        }
     }
 
-    public static void parseBody(HttpRequest request, InputStream inputStream) throws IOException {
-        List<String> header = request.getHeaders().getHeader("Content-Length");
-        if (header == null) {
-            return;
+    private static void parseHeader(HttpRequest request, String line) {
+        int colonIndex = line.indexOf(":");
+        if (colonIndex > 0) {
+            String key = line.substring(0, colonIndex).trim();
+            String value = line.substring(colonIndex + 1).trim();
+            request.addHeader(key, value);
         }
+    }
 
-        int contentLength = Integer.parseInt(header.get(0));
-
-        String contentType = null;
-        HttpHeaders headers = request.getHeaders();
-        List<String> contentTypeList = headers.getHeader("Content-Type");
-
-        if (contentTypeList != null) {
-            contentType = contentTypeList.get(0);
-        }
-
-        // Handle multipart/form-data
-        if (contentType != null && contentType.startsWith("multipart/form-data")) {
-            String boundary = extractBoundary(contentType);
-            if (boundary != null) {
-                parseMultipartData(request, inputStream, boundary, contentLength);
-                return;
+    private static void parseCookies(HttpRequest request, String cookieHeader) {
+        String[] cookies = cookieHeader.split(";");
+        for (String cookie : cookies) {
+            String[] parts = cookie.trim().split("=", 2);
+            if (parts.length == 2) {
+                request.addCookie(parts[0], parts[1]);
             }
         }
+    }
 
-        if (contentTypeList != null) {
-            contentType = contentTypeList.get(0);
-            request.setContentType(Mime.fromString(contentType));
+    private static void processSession(HttpRequest request) {
+        String sessionId = request.getCookies().get(Session.sessionStr);
+        Session session;
+
+        if (sessionId != null) {
+            session = Manager.findSession(sessionId);
+            if (session == null) {
+                session = new Session();
+                String newSessionId = Session.createSessionId();
+                Manager.addSession(newSessionId, session);
+
+                HttpCookie sessionCookie = new HttpCookie(Session.sessionStr, newSessionId);
+                // 쿠키를 요청에 추가하는 로직이 필요하다면 여기에 구현
+            }
+        } else {
+            session = new Session();
+            String newSessionId = Session.createSessionId();
+            Manager.addSession(newSessionId, session);
         }
 
-        ByteArrayOutputStream body = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
-        int read;
+        request.setSession(session);
+    }
+
+    private static void parseBody(HttpRequest request, BufferedReader reader, int contentLength) throws IOException {
+        char[] bodyChars = new char[contentLength];
         int totalRead = 0;
 
-        while (totalRead < contentLength && (read = inputStream.read(buffer, 0, Math.min(buffer.length, contentLength - totalRead))) != -1) {
-            body.write(buffer, 0, read);
+        while (totalRead < contentLength) {
+            int read = reader.read(bodyChars, totalRead, contentLength - totalRead);
+            if (read == -1) {
+                break;
+            }
             totalRead += read;
         }
 
-        String bodyStr = URLDecoder.decode(body.toString(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+        String body = new String(bodyChars, 0, totalRead);
+        request.setBody(body);
 
-        if ("application/x-www-form-urlencoded".equals(contentType)) {
-            request.parseParameters(bodyStr);
+        // Content-Type에 따른 파라미터 파싱
+        Mime contentType = request.getHeaders().getHeader("Content-Type") != null
+                ? Mime.fromString(request.getHeaders().getHeader("Content-Type").get(0))
+                : null;
+
+        if (contentType == Mime.APPLICATION_X_WWW_FORM_URLENCODED) {
+            parseFormParameters(request, body);
+        } else if (contentType != null && contentType.toString().startsWith("multipart/form-data")) {
+            parseMultipartFormData(request, body, contentType.toString());
+        }
+    }
+
+    private static void parseFormParameters(HttpRequest request, String body) {
+        if (body == null || body.isEmpty()) {
             return;
         }
 
-        if (contentType == null || contentType.isEmpty()) {
-            request.setBody(bodyStr);
+        String[] paramPairs = body.split("&");
+        for (String pair : paramPairs) {
+            String[] keyValue = pair.split("=", 2);
+            if (keyValue.length >= 1) {
+                try {
+                    String key = URLDecoder.decode(keyValue[0], StandardCharsets.UTF_8);
+                    String value = keyValue.length > 1
+                            ? URLDecoder.decode(keyValue[1], StandardCharsets.UTF_8)
+                            : "";
+                    request.addParameter(key, value);
+                } catch (Exception e) {
+                    logger.warn("Error decoding parameter: {}", pair);
+                }
+            }
         }
     }
 
-    private static String extractBoundary(String contentType) {
-        String[] parts = contentType.split(";");
+    private static void parseMultipartFormData(HttpRequest request, String body, String contentType) {
+        // boundary 추출
+        String boundary = null;
+        String[] contentTypeParts = contentType.split(";");
+        for (String part : contentTypeParts) {
+            part = part.trim();
+            if (part.startsWith("boundary=")) {
+                boundary = part.substring("boundary=".length());
+                break;
+            }
+        }
+
+        if (boundary == null) {
+            logger.warn("No boundary found in multipart/form-data");
+            return;
+        }
+
+        // 간단한 multipart 파싱 (실제로는 더 복잡한 구현이 필요)
+        String[] parts = body.split("--" + boundary);
         for (String part : parts) {
-            if (part.trim().startsWith("boundary=")) {
-                return part.split("=")[1].trim();
+            if (part.trim().isEmpty() || part.equals("--")) {
+                continue;
             }
-        }
-        return null;
-    }
 
-    private static void parseMultipartData(HttpRequest request, InputStream inputStream, String boundary, int contentLength) throws IOException {
-        byte[] boundaryBytes = ("--" + boundary).getBytes(StandardCharsets.UTF_8);
-        byte[] endBoundaryBytes = ("--" + boundary + "--").getBytes(StandardCharsets.UTF_8);
-        ByteArrayOutputStream partStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
-        int read;
-        int totalRead = 0;
+            String[] lines = part.split("\r\n");
+            String name = null;
+            String filename = null;
+            boolean isFile = false;
+            int dataStartIndex = 0;
 
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-
-        boolean inPart = false;
-        int b;
-        while (totalRead < contentLength && (b = bufferedInputStream.read()) != -1) {
-            totalRead++;
-            bufferStream.write(b);
-
-            if (bufferStream.size() >= boundaryBytes.length) {
-                byte[] bufferArray = bufferStream.toByteArray();
-                if (!inPart && startsWith(bufferArray, boundaryBytes)) {
-                    inPart = true;
-                    bufferStream.reset();
-                } else if (inPart && endsWith(bufferArray, endBoundaryBytes)) {
-                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
+            // 헤더 파싱
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i];
+                if (line.isEmpty()) {
+                    dataStartIndex = i + 1;
                     break;
-                } else if (inPart && endsWith(bufferArray, boundaryBytes)) {
-                    processPart(request, partStream.toByteArray(), boundaryBytes.length + 2);
-                    partStream.reset();
-                    bufferStream.reset();
-                } else {
-                    partStream.write(bufferArray[0]);
-                    bufferStream.reset();
-                    bufferStream.write(bufferArray, 1, bufferArray.length - 1);
                 }
-            }
-        }
-    }
 
-    private static boolean startsWith(byte[] source, byte[] prefix) {
-        if (source.length < prefix.length) {
-            return false;
-        }
-        for (int i = 0; i < prefix.length; i++) {
-            if (source[i] != prefix[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean endsWith(byte[] source, byte[] suffix) {
-        if (source.length < suffix.length) {
-            return false;
-        }
-        for (int i = 0; i < suffix.length; i++) {
-            if (source[i] != suffix[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void processPart(HttpRequest request, byte[] partData, int offset) throws IOException {
-        ByteArrayInputStream partInputStream = new ByteArrayInputStream(partData);
-        HttpHeaders partHeaders = new HttpHeaders();
-        ByteArrayOutputStream partBody = new ByteArrayOutputStream();
-        boolean headerEnded = false;
-        ByteArrayOutputStream bufferStream = new ByteArrayOutputStream();
-        int b;
-        partInputStream.read();
-        partInputStream.read();
-        while ((b = partInputStream.read()) != -1) {
-            String line = bufferStream.toString(StandardCharsets.UTF_8);
-            if (b == '\r') {
-                partInputStream.mark(1);
-                if (partInputStream.read() == '\n') {
-                    if (bufferStream.size() == 0) {
-                        headerEnded = true;
-                        continue;
-                    }
-
-                    if (!headerEnded) {
-                        String[] headerParts = line.split(":");
-                        if(headerParts.length == 2) {
-                            partHeaders.addHeader(headerParts[0].trim(), headerParts[1].trim());
+                if (line.startsWith("Content-Disposition:")) {
+                    if (line.contains("name=\"")) {
+                        int nameStart = line.indexOf("name=\"") + 6;
+                        int nameEnd = line.indexOf("\"", nameStart);
+                        if (nameEnd > nameStart) {
+                            name = line.substring(nameStart, nameEnd);
                         }
-                    } else {
-                        partBody.write(bufferStream.toByteArray());
-                        partBody.write("\r\n".getBytes(StandardCharsets.UTF_8));
                     }
+                    if (line.contains("filename=\"")) {
+                        int filenameStart = line.indexOf("filename=\"") + 10;
+                        int filenameEnd = line.indexOf("\"", filenameStart);
+                        if (filenameEnd > filenameStart) {
+                            filename = line.substring(filenameStart, filenameEnd);
+                            isFile = true;
+                        }
+                    }
+                }
+            }
 
-                    bufferStream.reset();
+            // 데이터 추출
+            if (name != null && dataStartIndex < lines.length) {
+                StringBuilder data = new StringBuilder();
+                for (int i = dataStartIndex; i < lines.length; i++) {
+                    if (i > dataStartIndex) {
+                        data.append("\r\n");
+                    }
+                    data.append(lines[i]);
+                }
+
+                if (isFile) {
+                    byte[] fileContent = data.toString().getBytes(StandardCharsets.UTF_8);
+                    request.addFile(name, filename, fileContent);
                 } else {
-                    partInputStream.reset();
-                    bufferStream.write(b);
+                    request.addParameter(name, data.toString());
                 }
-            } else {
-                bufferStream.write(b);
             }
         }
-
-        // Handling the last part of the body
-        if (bufferStream.size() > 0) {
-            partBody.write(bufferStream.toByteArray());
-        }
-
-        String disposition = partHeaders.getHeader("Content-Disposition").get(0);
-        String[] dispositionParts = disposition.split(";");
-        String name = null;
-        String filename = null;
-        for (String part : dispositionParts) {
-            if (part.trim().startsWith("name=")) {
-                name = part.split("=")[1].trim().replace("\"", "");
-            } else if (part.trim().startsWith("filename=")) {
-                filename = part.split("=")[1].trim().replace("\"", "");
-            }
-        }
-
-        if (filename != null) {
-            // Process file upload part
-            request.addFile(name, filename, partBody.toByteArray());
-        } else {
-            // Process form field part
-            request.addParameter(name, partBody.toString(StandardCharsets.UTF_8).trim());
-        }
-    }
-
-    private static String readLine(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int nextByte;
-        while ((nextByte = inputStream.read()) != -1) {
-            if (nextByte == '\r') {
-                nextByte = inputStream.read(); // read '\n'
-                if (nextByte == '\n') {
-                    break;
-                }
-                buffer.write('\r');
-            }
-            buffer.write(nextByte);
-        }
-        return buffer.toString(StandardCharsets.UTF_8);
     }
 }

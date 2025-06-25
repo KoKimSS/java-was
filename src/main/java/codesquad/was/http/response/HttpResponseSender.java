@@ -1,53 +1,87 @@
 package codesquad.was.http.response;
 
 import codesquad.was.http.common.HttpCookie;
+import codesquad.was.http.common.HttpHeaders;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 public class HttpResponseSender {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpResponseSender.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpResponseSender.class);
 
-    private HttpResponseSender() {
+    /**
+     * OutputStream에 HTTP 응답 전송 (기존 메서드 유지)
+     */
+    public static void sendHttpResponse(OutputStream outputStream, HttpResponse response) throws IOException {
+        byte[] responseBytes = getHttpResponseBytes(response);
+        outputStream.write(responseBytes);
+        outputStream.flush();
     }
 
     /**
-     * HTTP 응답을 생성하고 클라이언트에게 보냅니다.
-     *
-     * @param outputStream 클라이언트의 OutputStream
-     * @param response     응답으로 보낼 HttpResponse
-     * @throws IOException 전송 중 발생할 수 있는 IO 예외
+     * HTTP 응답을 바이트 배열로 변환 (NIO용 새로운 메서드)
      */
-    public static void sendHttpResponse(OutputStream outputStream, HttpResponse response) throws IOException {
-        StringBuilder responseSB = new StringBuilder();
-        String statusLine = "HTTP/1.1 " + response.getStatusCode().getCode() + "\r\n";
-        byte[] body = response.getBody();
-        StringBuilder headers = new StringBuilder("Content-Type: " + response.getContentType() + "\r\n"
-                + "Content-Length: " + (body == null ? 0 : body.length) + "\r\n");
-        for (String key : response.getHeaders().getHeaderNames()) {
-            List<String> values = response.getHeaders().getHeader(key);
-            for (String value : values) {
-                headers.append(key).append(": ").append(value).append("\r\n");
+    public static byte[] getHttpResponseBytes(HttpResponse response) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        
+        // Status Line
+        String statusMessage = response.getStatusMessage();
+        String statusLine = String.format("HTTP/1.1 %d %s\r\n",
+            response.getStatusCode().getCode(), 
+            statusMessage);
+        outputStream.write(statusLine.getBytes(StandardCharsets.UTF_8));
+
+        // Content-Type 헤더
+        if (response.getContentType() != null) {
+            String contentTypeHeader = "Content-Type: " + response.getContentType() + "\r\n";
+            outputStream.write(contentTypeHeader.getBytes(StandardCharsets.UTF_8));
+        }
+
+        // Content-Length 헤더
+        if (response.getBody() != null) {
+            String contentLengthHeader = "Content-Length: " + response.getBody().length + "\r\n";
+            outputStream.write(contentLengthHeader.getBytes(StandardCharsets.UTF_8));
+        } else {
+            outputStream.write("Content-Length: 0\r\n".getBytes(StandardCharsets.UTF_8));
+        }
+
+        // 추가 헤더들
+        HttpHeaders headers = response.getHeaders();
+        for (String headerName : headers.getHeaderNames()) {
+            String headerValue = headers.getValue(headerName);
+            if (headerValue != null) {
+                String header = headerName + ": " + headerValue + "\r\n";
+                outputStream.write(header.getBytes(StandardCharsets.UTF_8));
             }
         }
 
+        // 쿠키 헤더들
         Map<String, HttpCookie> cookies = response.getCookies();
-        cookies.forEach((key, cookie) -> headers.append("Set-Cookie: ").append(cookie.toString()).append("\r\n"));
-        headers.append("\r\n");
-
-        outputStream.write(statusLine.getBytes(StandardCharsets.UTF_8));
-        outputStream.write(headers.toString().getBytes(StandardCharsets.UTF_8));
-        if (body != null) {
-            outputStream.write(body);
+        for (HttpCookie cookie : cookies.values()) {
+            String cookieHeader = "Set-Cookie: " + cookie.toString() + "\r\n";
+            outputStream.write(cookieHeader.getBytes(StandardCharsets.UTF_8));
         }
-        responseSB.append("\n").append(statusLine).append(headers).append("\n");
-        logger.info(responseSB.toString());
+
+        // Connection 헤더 (NIO에서는 일반적으로 keep-alive 사용하지 않음)
+        outputStream.write("Connection: close\r\n".getBytes(StandardCharsets.UTF_8));
+
+        // 헤더 종료
+        outputStream.write("\r\n".getBytes(StandardCharsets.UTF_8));
+
+        // Body
+        if (response.getBody() != null && response.getBody().length > 0) {
+            outputStream.write(response.getBody());
+        }
+
+        byte[] responseBytes = outputStream.toByteArray();
+        outputStream.close();
+        
+        return responseBytes;
     }
-
 }
-
