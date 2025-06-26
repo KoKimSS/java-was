@@ -48,20 +48,19 @@ public class ResourceGetter {
      * @return 파일의 바이트 배열
      */
     public static byte[] getResourceBytesByPath(String filePath){
-        InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath);
-        if(resourceAsStream == null) {
-            throw new NotFoundException("매핑되는 url이 없습니다");
-        }
         byte[] bytes;
+        try (InputStream resourceAsStream = ResourceGetter.class.getResourceAsStream(filePath)) {
+            if (resourceAsStream == null) {
+                throw new NotFoundException("매핑되는 url이 없습니다");
+            }
 
-        try {
-            bytes = resourceAsStream.readAllBytes();
+            try {
+                bytes = resourceAsStream.readAllBytes();
+            } catch (IOException e) {
+                throw new InternalServerException("리소스 읽을 때 IOException 발생");
+            }
         } catch (IOException e) {
-            throw new InternalServerException("리소스 읽을 때 IOException 발생");
-        }
-
-        if(bytes == null) {
-            throw new NotFoundException("매핑되는 url이 없습니다");
+            throw new RuntimeException(e);
         }
 
         return bytes;
